@@ -1,5 +1,18 @@
 kensaku
 
+:untuk git new repo
+touch README.md
+git init
+git add README.md
+git commit -m "first commit"
+git remote add origin https://github.com/suryakencana/kensaku.git
+git push -u origin master
+
+:untuk git exists repo
+git remote add origin https://github.com/suryakencana/kensaku.git
+git push -u origin master
+
+
 dibangun diatas python 2.7
 cli:
 - pip install virtualvenv

@@ -169,8 +169,6 @@ def render_promo_by(ix, terms, req):
         #                                "content_agent"], s.schema)
         qp = qparser.MultifieldParser(["tpl_hotel_airline",
                                        "promo_name",
-                                       "content_packet",
-                                       "promo_tags",
                                        "content_agent"], s.schema)
 
         try:
@@ -246,7 +244,7 @@ def render_promo_by(ix, terms, req):
                 "Name": None,
                 "IsTitle": True,
                 "HasImage": False,
-                "Header": "Agents",
+                "Header": "Travel Umroh",
                 "ObjectId": 0,
                 "AgentId": 0,
                 "PacketId": 0,
@@ -331,7 +329,7 @@ def render_promo_by(ix, terms, req):
                 "Name": None,
                 "IsTitle": True,
                 "HasImage": False,
-                "Header": "Packets",
+                "Header": "Paket Promo",
                 "ObjectId": 0,
                 "AgentId": 0,
                 "PacketId": 0,
