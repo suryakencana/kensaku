@@ -1,0 +1,352 @@
+{
+    "_id" : 1608,
+    "agent_id" : 266,
+    "airline_id" : 42,
+    "created_at" : ISODate("2014-11-10T04:16:32.593Z"),
+    "day" : 9,
+    "departure_ids" : [
+        2948,
+        2949,
+        2950,
+        2951,
+        2952,
+        2953,
+        2954
+    ],
+    "description" : "Nikmati perjalanan ibadah umroh Anda bersama Erni Tour. Ibadah umroh Anda akan lebih mengesankan.",
+    "dp_dollar" : 500,
+    "dp_idr" : 6116000,
+    "filter_hotel_mecca_rate" : "me-4 me-5",
+    "filter_hotel_medinah_rate" : "ma-4",
+    "hotel_mecca_ids" : [
+        1,
+        27,
+        264
+    ],
+    "hotel_medinah_ids" : [
+        16,
+        36
+    ],
+    "hotel_rooms" : [
+        {
+            "room_type_id" : 1,
+            "name" : "Double",
+            "price" : 2200,
+            "kurs" : "$",
+            "available_room" : "10",
+            "_id" : 69799
+        },
+        {
+            "room_type_id" : 2,
+            "name" : "Triple",
+            "price" : 2100,
+            "kurs" : "$",
+            "available_room" : "10",
+            "_id" : 69800
+        },
+        {
+            "room_type_id" : 3,
+            "name" : "Quadruple",
+            "price" : 2000,
+            "kurs" : "$",
+            "available_room" : "10",
+            "_id" : 69801
+        }
+    ],
+    "included_facility_airline" : "{\"name_folder\":\"emirates-etihad\",\"detail_facility\":[{\"name_facility\":\"Makan & Minum\",\"name_icon\":\"makan-minum.png\",\"include\":\"Ya\",\"description\":\"<p>Emirates Airlines &amp;&nbsp;Etihad Airways menyediakan makanan dan minuman di dalam pesawat</p>\\r\\n\",\"show\":true},{\"name_facility\":\"Bagasi\",\"name_icon\":\"bagasi.png\",\"include\":\"Ya\",\"description\":\"<p>Bagasi kabin 7Kg (<a href=\\\"http://www.emirates.com/english/help/faq/214915/what-is-my-allowance-for-cabin-baggage\\\" target=\\\"_blank\\\">Emirates Airlines</a> /&nbsp;<a href=\\\"http://www.etihad.com/en-id/before-you-fly/baggage-information/baggage-allowances/\\\" target=\\\"_blank\\\">Etihad Airways</a>)</p>\\r\\n\",\"show\":true},{\"name_facility\":\"Toilet\",\"name_icon\":\"toilet.png\",\"include\":\"Ya\",\"description\":\"<p>Emirates Airlines &amp;&nbsp;Etihad Airways menyediakan toilet untuk penumpang</p>\\r\\n\",\"show\":true},{\"name_facility\":\"Airport Lounge\",\"name_icon\":\"lounge.png\",\"include\":\"Ya\",\"description\":\"<p>Emirates Airlines &amp;&nbsp;Etihad Airways menyediakan airport lounge untuk&nbsp;penerbangan kelas bisnis dan kelas utama</p>\\r\\n\",\"show\":true},{\"name_facility\":\"Internet\",\"name_icon\":\"wireless.png\",\"include\":\"Ya\",\"description\":\"<p>Emirates Airlines:</p>\\r\\n\\r\\n<p style=\\\"margin-left:40px\\\">Wifi tersedia di dalam pesawat dengan biaya antara USD 2.75 hingga USD 7.5.</p>\\r\\n\\r\\n<p>Etihad Airways:</p>\\r\\n\\r\\n<p style=\\\"margin-left:40px\\\">Tersedia jaringan internet penerbangan kelas utama, juga tersedia untuk kelas bisnis dan ekonomi dengan jenis pesawat tertentu.</p>\\r\\n\",\"show\":true},{\"name_facility\":\"Kelas Ekonomi\",\"name_icon\":\"ekonomi-class.png\",\"include\":\"Ya\",\"description\":\"<p>Emirates Airlines:</p>\\r\\n\\r\\n<p style=\\\"margin-left:40px\\\"><em>Free baggage allowance</em>: 30Kg</p>\\r\\n\\r\\n<p>Etihad Airlines:</p>\\r\\n\\r\\n<p style=\\\"margin-left:40px\\\"><em>Reclining seat</em>, Stop kontak, Hiburan multimedia, <em>Free baggage allowance</em>: 30Kg</p>\\r\\n\",\"show\":true},{\"name_facility\":\"Kelas Bisnis\",\"name_icon\":\"business-class.png\",\"include\":\"Ya\",\"description\":\"<p>Emirates Airlines:</p>\\r\\n\\r\\n<p style=\\\"margin-left:40px\\\">Kursi dengan sandaran yang dapat disesuaikan, <em>Flat bed</em>, Stop kontak,<em> Onboard Lounge</em>, Hiburan multimedia, Makanan dan minuman, Pemesanan kelas bisnis tergantung ketersediaan, <em>Free baggage allowance</em>: 40Kg</p>\\r\\n\\r\\n<p>Etihad Airlines:</p>\\r\\n\\r\\n<p style=\\\"margin-left:40px\\\"><em>Reclining seat</em>, Stop kontak, Hiburan multimedia, Flat bed, Bantal, Selimut, Layanan eksklusif, <em>Free baggage allowance</em>: 40Kg</p>\\r\\n\",\"show\":true},{\"name_facility\":\"Kelas Utama\",\"name_icon\":\"vip-class.png\",\"include\":\"Ya\",\"description\":\"<p>Emirates Airlines:</p>\\r\\n\\r\\n<p style=\\\"margin-left:40px\\\"><em>First Class Private Suites</em>, Kursi dengan sandaran yang dapat disesuaikan, <em>Flat bed</em>, Stop kontak, <em>Onboard Lounge</em>, Hiburan multimedia, Makanan dan minuman, Shower &amp; Spa, Pemesanan kelas utama tergantung ketersediaan, <em>Free baggage allowance</em>: 50Kg</p>\\r\\n\\r\\n<p>Etihad Airlines:</p>\\r\\n\\r\\n<p style=\\\"margin-left:40px\\\"><em>Private cabin</em>, Kasur ekstra lebar, Hiburan multimedia, TV 23 inch, Kamar ganti, Stop kontak, Layanan eksklusif, <em>Free baggage allowance</em>: 50Kg</p>\\r\\n\",\"show\":true}]}",
+    "included_facility_term" : "{\"name_folder\":\"standar-1\",\"detail_facility\":[{\"name_facility\":\"Paspor\",\"name_icon\":\"checked.png\",\"include\":\"Ya\",\"description\":\"<p>Paspor berlaku minimal 8 bulan dan nama di paspor harus 3 kata, contoh : Siti Aisyah Uni</p>\\r\\n\",\"show\":true},{\"name_facility\":\"Pas foto terbaru\",\"name_icon\":\"checked.png\",\"include\":\"Ya\",\"description\":\"<ul>\\r\\n\\t<li>Berwarna</li>\\r\\n\\t<li>Latar belakang (layar) foto berwarna putih</li>\\r\\n\\t<li>Close up (Wajah terlihat 80%)</li>\\r\\n\\t<li>Tidak memakai kaca mata hitam</li>\\r\\n\\t<li>Wanita harus memakai jilbab</li>\\r\\n\\t<li>Ukuran foto: 4 x 6 = 6 lembar</li>\\r\\n</ul>\\r\\n\",\"show\":true},{\"name_facility\":\"KTP\",\"name_icon\":\"checked.png\",\"include\":\"Ya\",\"description\":\"<p>Fotocopy KTP</p>\\r\\n\",\"show\":true},{\"name_facility\":\"KTP / KK Asli\",\"name_icon\":\"checked.png\",\"include\":\"Ya\",\"description\":\"<p>Bagi wanita diatas 45 tahun</p>\\r\\n\",\"show\":true},{\"name_facility\":\"Akta kelahiran & KK Asli\",\"name_icon\":\"checked.png\",\"include\":\"Ya\",\"description\":\"<p>Untuk peserta anak</p>\\r\\n\",\"show\":true},{\"name_facility\":\"Surat nikah & KK Asli\",\"name_icon\":\"checked.png\",\"include\":\"Ya\",\"description\":\"<p>Bagi peserta suami-istri</p>\\r\\n\",\"show\":true},{\"name_facility\":\"Uang muka\",\"name_icon\":\"checked.png\",\"include\":\"Ya\",\"description\":\"<p>Membayar uang muka pendaftaran umroh sebesar &lt;uangmuka&gt;</p>\\r\\n\",\"show\":true},{\"name_facility\":\"Pelunasan\",\"name_icon\":\"checked.png\",\"include\":\"Ya\",\"description\":\"<p>&lt;bataspelunasan&gt; sebelum keberangkatan</p>\\r\\n\",\"show\":true},{\"name_facility\":\"Pendaftaran\",\"name_icon\":\"checked.png\",\"include\":\"Ya\",\"description\":\"<p>Minimal 1 bulan sebelum keberangkatan (selama tempat masih tersedia)</p>\\r\\n\",\"show\":true},{\"name_facility\":\"Kartu kuning\",\"name_icon\":\"checked.png\",\"include\":\"Ya\",\"description\":\"<p>Menyerahkan bukti suntik Meningitis</p>\\r\\n\",\"show\":true}]}",
+    "last_allowed_book" : 30,
+    "name" : "9 Hari Paket VIP",
+    "packet_id" : 1659,
+    "packet_type" : "NORMAL",
+    "photos" : [
+        {
+            "name" : "9 Hari Paket",
+            "path" : "/uploads/packet/packet_photo/1659/kabah.jpg",
+            "_id" : 24528
+        },
+        {
+            "name" : "9 Hari Paket",
+            "path" : "/uploads/packet/packet_photo/1659/kabah.jpg",
+            "_id" : 24529
+        },
+        {
+            "name" : "9 Hari Paket VIP",
+            "path" : "/uploads/packet/packet_photo/1659/kabah.jpg",
+            "_id" : 24530
+        },
+        {
+            "name" : "9 Hari Paket VIP",
+            "path" : "/uploads/packet/packet_photo/1659/kabah.jpg",
+            "_id" : 24531
+        },
+        {
+            "name" : "9 Hari Paket VIP",
+            "path" : "/uploads/packet/packet_photo/1659/kabah.jpg",
+            "_id" : 24532
+        },
+        {
+            "name" : "9 Hari Paket VIP",
+            "path" : "/uploads/packet/packet_photo/1659/kabah.jpg",
+            "_id" : 24533
+        }
+    ],
+    "recomendation" : 0,
+    "status" : 0,
+    "status_date" : 1,
+    "tags" : [
+        "HotelMekkah:AjyadMakarimHotel",
+        "HotelMekkah:AlMiraAjyadHotel",
+        "HotelMedinah:MubarakAlMadinahHotel",
+        "HotelMedinah:AlMajeediARACSuites",
+        "Type:REGULER",
+        "Maskapai:EmiratesAirlines/EtihadAirlines",
+        "JumlahHari:9hari",
+        "Keberangkatan:03januari2015",
+        "Keberangkatan:07februari2015",
+        "Keberangkatan:16februari2015",
+        "Keberangkatan:07maret2015",
+        "Keberangkatan:14maret2015",
+        "Keberangkatan:21maret2015",
+        "Keberangkatan:26maret2015"
+    ],
+    "teamwork_ids" : [],
+    "term" : "<ol>\r\n\t<li>Mengisi formulir pendaftaran</li>\r\n\t<li>Menyerahkan Paspor Asli, yang masih berlaku minimal 8 bulan. &nbsp;Dengan nama 3 suku kata, seperti : Lovanto Putra Oetomo</li>\r\n\t<li>Pas foto berwarna dengan latar belakang putih, dan fokus wajah diperbesar 80%&nbsp;ukuran : 3 x 4 = 5 lembar &amp; 4 x 6 = 5 lembar</li>\r\n\t<li>Foto kopi KTP</li>\r\n\t<li>Menyerahkan dokumen asli, apabila :\r\n\t<ul>\r\n\t\t<li>Surat Nikah Asli (bagi suami istri)</li>\r\n\t\t<li>Akte Kelahiran Asli (bagi anak usia dibawah 18 tahun)</li>\r\n\t\t<li>KK asli atau KTP asli (bagi wanita usia diatas 45 tahun)</li>\r\n\t</ul>\r\n\t</li>\r\n\t<li>Membayar DP sebesar U$D.500, 2 bulan sebelum keberangkatan</li>\r\n</ol>\r\n",
+    "transportation_id" : 6,
+    "umrah_events" : [
+        {
+            "event_date" : "Hari 1, Jakarta - Jeddah - Madinah",
+            "name" : "Hari 1, Jakarta - Jeddah - Madinah",
+            "description" : "Hari 1, Jakarta - Jeddah - Madinah",
+            "_id" : 41805
+        },
+        {
+            "event_date" : "Hari 2-3, Madinah",
+            "name" : "Hari 2-3, Madinah",
+            "description" : "Hari 2-3, Madinah",
+            "_id" : 41806
+        },
+        {
+            "event_date" : "Hari 4, Madinah - Mekkah",
+            "name" : "Hari 4, Madinah - Mekkah",
+            "description" : "Hari 4, Madinah - Mekkah",
+            "_id" : 41807
+        },
+        {
+            "event_date" : "Hari 5-7, Mekkah",
+            "name" : "Hari 5-7, Mekkah",
+            "description" : "Hari 5-7, Mekkah",
+            "_id" : 41808
+        },
+        {
+            "event_date" : "Hari 8, Mekkah - Jeddah - Jakarta",
+            "name" : "Hari 8, Mekkah - Jeddah - Jakarta",
+            "description" : "Hari 8, Mekkah - Jeddah - Jakarta",
+            "_id" : 41809
+        },
+        {
+            "event_date" : "Hari 9, Jakarta",
+            "name" : "Hari 9, Jakarta",
+            "description" : "Hari 9, Jakarta",
+            "_id" : 41810
+        },
+        {
+            "event_date" : "Hari 1, Jakarta - Jeddah - Madinah",
+            "name" : "Hari 1, Jakarta - Jeddah - Madinah",
+            "description" : "Hari 1, Jakarta - Jeddah - Madinah",
+            "_id" : 41811
+        },
+        {
+            "event_date" : "Hari 2-3, Madinah",
+            "name" : "Hari 2-3, Madinah",
+            "description" : "Hari 2-3, Madinah",
+            "_id" : 41812
+        },
+        {
+            "event_date" : "Hari 4, Madinah - Mekkah",
+            "name" : "Hari 4, Madinah - Mekkah",
+            "description" : "Hari 4, Madinah - Mekkah",
+            "_id" : 41813
+        },
+        {
+            "event_date" : "Hari 5-7, Mekkah",
+            "name" : "Hari 5-7, Mekkah",
+            "description" : "Hari 5-7, Mekkah",
+            "_id" : 41814
+        },
+        {
+            "event_date" : "Hari 8, Mekkah - Jeddah - Jakarta",
+            "name" : "Hari 8, Mekkah - Jeddah - Jakarta",
+            "description" : "Hari 8, Mekkah - Jeddah - Jakarta",
+            "_id" : 41815
+        },
+        {
+            "event_date" : "Hari 9, Jakarta",
+            "name" : "Hari 9, Jakarta",
+            "description" : "Hari 9, Jakarta",
+            "_id" : 41816
+        },
+        {
+            "event_date" : "Hari 1, Jakarta - Jeddah - Madinah",
+            "name" : "Hari 1, Jakarta - Jeddah - Madinah",
+            "description" : "Hari 1, Jakarta - Jeddah - Madinah",
+            "_id" : 41817
+        },
+        {
+            "event_date" : "Hari 2-3, Madinah",
+            "name" : "Hari 2-3, Madinah",
+            "description" : "Hari 2-3, Madinah",
+            "_id" : 41818
+        },
+        {
+            "event_date" : "Hari 4, Madinah - Mekkah",
+            "name" : "Hari 4, Madinah - Mekkah",
+            "description" : "Hari 4, Madinah - Mekkah",
+            "_id" : 41819
+        },
+        {
+            "event_date" : "Hari 5-7, Mekkah",
+            "name" : "Hari 5-7, Mekkah",
+            "description" : "Hari 5-7, Mekkah",
+            "_id" : 41820
+        },
+        {
+            "event_date" : "Hari 8, Mekkah - Jeddah - Jakarta",
+            "name" : "Hari 8, Mekkah - Jeddah - Jakarta",
+            "description" : "Hari 8, Mekkah - Jeddah - Jakarta",
+            "_id" : 41821
+        },
+        {
+            "event_date" : "Hari 9, Jakarta",
+            "name" : "Hari 9, Jakarta",
+            "description" : "Hari 9, Jakarta",
+            "_id" : 41822
+        },
+        {
+            "event_date" : "Hari 1, Jakarta - Jeddah - Madinah",
+            "name" : "Hari 1, Jakarta - Jeddah - Madinah",
+            "description" : "Hari 1, Jakarta - Jeddah - Madinah",
+            "_id" : 41823
+        },
+        {
+            "event_date" : "Hari 2-3, Madinah",
+            "name" : "Hari 2-3, Madinah",
+            "description" : "Hari 2-3, Madinah",
+            "_id" : 41824
+        },
+        {
+            "event_date" : "Hari 4, Madinah - Mekkah",
+            "name" : "Hari 4, Madinah - Mekkah",
+            "description" : "Hari 4, Madinah - Mekkah",
+            "_id" : 41825
+        },
+        {
+            "event_date" : "Hari 5-7, Mekkah",
+            "name" : "Hari 5-7, Mekkah",
+            "description" : "Hari 5-7, Mekkah",
+            "_id" : 41826
+        },
+        {
+            "event_date" : "Hari 8, Mekkah - Jeddah - Jakarta",
+            "name" : "Hari 8, Mekkah - Jeddah - Jakarta",
+            "description" : "Hari 8, Mekkah - Jeddah - Jakarta",
+            "_id" : 41827
+        },
+        {
+            "event_date" : "Hari 9, Jakarta",
+            "name" : "Hari 9, Jakarta",
+            "description" : "Hari 9, Jakarta",
+            "_id" : 41828
+        },
+        {
+            "event_date" : "Hari 1, Jakarta - Jeddah - Madinah",
+            "name" : "Hari 1, Jakarta - Jeddah - Madinah",
+            "description" : "Hari 1, Jakarta - Jeddah - Madinah",
+            "_id" : 41829
+        },
+        {
+            "event_date" : "Hari 2-3, Madinah",
+            "name" : "Hari 2-3, Madinah",
+            "description" : "Hari 2-3, Madinah",
+            "_id" : 41830
+        },
+        {
+            "event_date" : "Hari 4, Madinah - Mekkah",
+            "name" : "Hari 4, Madinah - Mekkah",
+            "description" : "Hari 4, Madinah - Mekkah",
+            "_id" : 41831
+        },
+        {
+            "event_date" : "Hari 5-7, Mekkah",
+            "name" : "Hari 5-7, Mekkah",
+            "description" : "Hari 5-7, Mekkah",
+            "_id" : 41832
+        },
+        {
+            "event_date" : "Hari 8, Mekkah - Jeddah - Jakarta",
+            "name" : "Hari 8, Mekkah - Jeddah - Jakarta",
+            "description" : "Hari 8, Mekkah - Jeddah - Jakarta",
+            "_id" : 41833
+        },
+        {
+            "event_date" : "Hari 9, Jakarta",
+            "name" : "Hari 9, Jakarta",
+            "description" : "Hari 9, Jakarta",
+            "_id" : 41834
+        },
+        {
+            "event_date" : "Hari 1, Jakarta - Jeddah - Madinah",
+            "name" : "Hari 1, Jakarta - Jeddah - Madinah",
+            "description" : "Hari 1, Jakarta - Jeddah - Madinah",
+            "_id" : 41835
+        },
+        {
+            "event_date" : "Hari 2-3, Madinah",
+            "name" : "Hari 2-3, Madinah",
+            "description" : "Hari 2-3, Madinah",
+            "_id" : 41836
+        },
+        {
+            "event_date" : "Hari 4, Madinah - Mekkah",
+            "name" : "Hari 4, Madinah - Mekkah",
+            "description" : "Hari 4, Madinah - Mekkah",
+            "_id" : 41837
+        },
+        {
+            "event_date" : "Hari 5-7, Mekkah",
+            "name" : "Hari 5-7, Mekkah",
+            "description" : "Hari 5-7, Mekkah",
+            "_id" : 41838
+        },
+        {
+            "event_date" : "Hari 8, Mekkah - Jeddah - Jakarta",
+            "name" : "Hari 8, Mekkah - Jeddah - Jakarta",
+            "description" : "Hari 8, Mekkah - Jeddah - Jakarta",
+            "_id" : 41839
+        },
+        {
+            "event_date" : "Hari 9, Jakarta",
+            "name" : "Hari 9, Jakarta",
+            "description" : "Hari 9, Jakarta",
+            "_id" : 41840
+        }
+    ],
+    "umrah_feature_ids" : [
+        1557,
+        1558,
+        1559,
+        1560,
+        1561,
+        1562,
+        1565,
+        1564
+    ],
+    "umrah_not_include_ids" : [
+        1176,
+        1177,
+        1178,
+        1179,
+        1180
+    ],
+    "updated_at" : ISODate("2014-11-10T04:26:32.778Z")
+}

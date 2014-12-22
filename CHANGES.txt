@@ -1,0 +1,10 @@
+1.0 Milestones
+---
+
+-  Initial version @ 0.1.5
+- [BUG]:case-insensitive search mode:
+- [MNR]:keterangan resultText
+- [MNR]:keterangan RangeDate mulai keberangkatan - akhir keberangkatan
+- [MNR]:range price untuk combobox
+- [MNR]:total promo per group
+- [MJR]:tambah field template hotel dan maskapai

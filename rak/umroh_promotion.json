@@ -1,0 +1,79 @@
+{
+    "_id" : 5123,
+    "_slugs" : [ 
+        "pr2130-9-hari-star-5"
+    ],
+    "agent_address" : "Brigjen Katamso No. 33 Kota bambu selatan, Palmerah ",
+    "agent_city" : "Kota Jakarta Barat",
+    "agent_id" : 113,
+    "agent_name" : "Mabrur Abadi Pratama",
+    "agent_slug" : "mabrurabadipratama",
+    "airline_name" : "Garuda Indonesia / Cathay Pasific",
+    "availability" : 10,
+    "category_promo" : "REGULER",
+    "convert_currency" : 2475,
+    "created_at" : ISODate("2014-09-02T09:15:22.654Z"),
+    "days" : 9,
+    "departure_date" : ISODate("2015-02-21T00:00:00.000Z"),
+    "departure_id" : 2269,
+    "departure_month_year" : 201502,
+    "discount" : 25,
+    "discount_type" : "Potongan Harga",
+    "expired_date" : ISODate("2015-05-24T00:00:00.000Z"),
+    "hotel_mecca_name" : "Al Safwah Royal Orchid Hotel",
+    "hotel_mecca_review_rate" : 0,
+    "hotel_medinah_name" : "Al - Haram Hotel ",
+    "hotel_medinah_review_rate" : 7,
+    "kurs" : "$",
+    "last_viewed" : ISODate("2014-11-10T07:43:33.200Z"),
+    "mecca_hotel_rates" : [ 
+        5
+    ],
+    "medinah_hotel_rates" : [ 
+        5
+    ],
+    "promo_id" : 5210,
+    "promo_tags" : [ 
+        "Rute:JakartaJeddah", 
+        "HotelMekkah:AlSafwahRoyalOrchidHotel", 
+        "HotelMedinah:Al-HaramHotel", 
+        "Type:REGULER", 
+        "Maskapai:QatarAirways", 
+        "JumlahHari:9hari", 
+        "Keberangkatan:21februari2015"
+    ],
+    "promo_type" : "",
+    "rate_promo" : 6.175535850079538,
+    "start_date" : ISODate("2014-09-02T00:00:00.000Z"),
+    "starting_price" : 2475,
+    "status" : 1,
+    "title" : "PR2130 - 9 Hari *5",
+    "total_bobot" : 3.35867385737011,
+    "umrah_id" : 1334,
+    "umrah_promotion_rooms" : [ 
+        {
+            "room_type_id" : 1,
+            "original_price" : 2800,
+            "original_kurs" : "$",
+            "discounted_price" : 2775,
+            "_id" : 344791
+        }, 
+        {
+            "room_type_id" : 2,
+            "original_price" : 2650,
+            "original_kurs" : "$",
+            "discounted_price" : 2625,
+            "_id" : 344792
+        }, 
+        {
+            "room_type_id" : 3,
+            "original_price" : 2500,
+            "original_kurs" : "$",
+            "discounted_price" : 2475,
+            "_id" : 344793
+        }
+    ],
+    "unlimited" : 1,
+    "updated_at" : ISODate("2014-11-07T06:10:15.263Z"),
+    "viewed" : 70
+}

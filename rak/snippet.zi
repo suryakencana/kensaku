@@ -1,0 +1,11 @@
+db.umrah_promotions.find({promo_id:
+    {$in: [6008, 6009, 6010,
+    6011, 6012,6013,6014, 6015, 6016]},
+    departure_date: {
+        $gte: ISODate("2014-12-22T00:00:00Z"),
+        $lte: ISODate("2015-04-09T00:00:00Z")},
+    starting_price: {
+        $gte: 2000,
+        $lte: 2500}
+    })
+

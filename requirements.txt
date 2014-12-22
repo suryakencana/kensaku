@@ -1,0 +1,9 @@
+pyramid
+pyramid_mako
+pyramid_tm
+pyramid-debugtoolbar==1.0.9
+whoosh
+waitress
+gunicorn
+pymongo
+sqlalchemy
