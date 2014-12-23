@@ -132,7 +132,7 @@ def valid_button(request):
         return Response(
             body=json.dumps({'data': {
                 'count': count,
-                'price': price[0] if len(price) > 1 else 0
+                'price': price[0] if len(price) >= 1 else 0
             }}),
             status='201 Created',
             charset='UTF-8',
@@ -173,7 +173,7 @@ def render_promo_by(ix, terms, req):
 
         try:
             q = qp.parse(terms)
-            sts = NumericRange("status_promo", 0, 2)
+            sts = NumericRange("status_promo", 0, 1)
             oldDate = DateRange("end_date", None, datetime.now())
             results = s.search_page(q, 1, 10, sortedby="status_promo", maptype=Best)
             results = s.search_page(q, 1, 10, filter=sts, mask=oldDate, groupedby=["packet_id", "agent_id"])
@@ -295,6 +295,7 @@ def render_promo_by(ix, terms, req):
                     gpprice = sorted([s.stored_fields(docnum)['price'] for docnum in doclist])
                     # group departure date per promo untuk mencari range tanggal keberangkatan paling awal
                     gpdate = sorted([s.stored_fields(docnum)['end_date'] for docnum in doclist])
+                    print(gpdate)
                     grouppacket.extend(gppackets)
                     feeder.append({
                         "Name": nameo.upper(),

@@ -12,6 +12,13 @@ git push -u origin master
 git remote add origin https://github.com/suryakencana/kensaku.git
 git push -u origin master
 
+:untuk install mysql connector python
+shell> pip install mysql-connector-python
+  Could not find any downloads that satisfy the requirement
+    mysql-connector-python
+  Some externally hosted files were ignored
+    (use --allow-external mysql-connector-python to allow).
+
 
 dibangun diatas python 2.7
 cli:
