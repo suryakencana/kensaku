@@ -13,7 +13,7 @@ from whoosh.sorting import Best
 
 log = logging.getLogger(__name__)
 
-# SOURCEDIR = os.path.abspath("cpython/Doc")
+SOURCEDIR = os.path.abspath("cpython/Doc")
 # SOURCEDIR = os.environ.get("DEMOSOURCE", "cpython/Doc")
 # INDEXDIR = os.environ.get("DEMOINDEX", "index")
 INDEXDIR = os.path.abspath("promo-tags-idx")
@@ -169,6 +169,7 @@ def render_promo_by(ix, terms, req):
         #                                "content_agent"], s.schema)
         qp = qparser.MultifieldParser(["tpl_hotel_airline",
                                        "promo_name",
+                                       "content_agent",
                                        "promo_tags"], s.schema)
 
         try:

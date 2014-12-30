@@ -20,7 +20,7 @@ from pymongo import MongoClient
 from whoosh import qparser, highlight
 from whoosh.qparser.dateparse import DateParserPlugin
 from whoosh.sorting import Facets
-from whooshsearch.views import SOURCEDIR
+from kensaku.views import SOURCEDIR
 
 
 def render_results(s, terms, req):
