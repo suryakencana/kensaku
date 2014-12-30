@@ -16,7 +16,7 @@ log = logging.getLogger(__name__)
 # SOURCEDIR = os.path.abspath("cpython/Doc")
 # SOURCEDIR = os.environ.get("DEMOSOURCE", "cpython/Doc")
 # INDEXDIR = os.environ.get("DEMOINDEX", "index")
-INDEXDIR = os.path.abspath("promo-fix-idx")
+INDEXDIR = os.path.abspath("promo-tags-idx")
 #
 # @view_config(route_name='results',
 # renderer='templates/whoosh/results.mako')
