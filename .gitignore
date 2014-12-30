@@ -56,4 +56,5 @@ target/
 # wekku
 *.tar.gz
 *fix-idx
+*-idx
 .idea
