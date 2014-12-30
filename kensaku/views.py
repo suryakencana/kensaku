@@ -169,7 +169,7 @@ def render_promo_by(ix, terms, req):
         #                                "content_agent"], s.schema)
         qp = qparser.MultifieldParser(["tpl_hotel_airline",
                                        "promo_name",
-                                       "content_agent"], s.schema)
+                                       "promo_tags"], s.schema)
 
         try:
             q = qp.parse(terms)
@@ -227,8 +227,8 @@ def render_promo_by(ix, terms, req):
                         "endPrice": gpprice[-1],
                         "startDate": gpdate[0].isoformat(),
                         "endDate": gpdate[-1].isoformat(),
-                        "ResultText": nameo,
-                        "ResultAddress": nameo,
+                        "ResultText": nameo.upper(),
+                        "ResultAddress": nameo.upper(),
                         "Image": None,
                         "RetinaImage": None,
                         "BgImageLoader": None,

@@ -25,7 +25,8 @@ from whoosh.index import create_in
 from whoosh.lang.stopwords import stoplists
 
 
-INDEXDIR = os.path.abspath("promo-fix-idx")
+# INDEXDIR = os.path.abspath("promo-fix-idx")
+INDEXDIR = os.path.abspath("promo-tags-idx")
 ana = analysis.StemmingAnalyzer(stoplist=stoplists["en"], maxsize=40)
 anaNgram = analysis.NgramWordAnalyzer(4)
 
@@ -54,6 +55,15 @@ class PromoIdxSchema(fields.SchemaClass):
     # status_promo = fields.COLUMN(NumericColumn("i"))
 
 
+def content_promo_tags(multi_tag):
+    stray = []
+    for key, value in dict(multi_tag).iteritems():
+        for v in value:
+            stray.append(key)
+            stray.append(v)
+    str = ' '.join(stray).lower()
+    return str
+
 if not os.path.exists(INDEXDIR):
     os.mkdir(INDEXDIR)
 
@@ -71,6 +81,7 @@ with index.writer(limitmb=2048) as w:
     for row in pro_idx.find():
         # print(row.get('idx'))
         print(row.get('packet_id'))
+        promotags = content_promo_tags(row.get('promo_tags', None))
         w.update_document(
             idx=unicode(row.get('idx')),
             price=row.get('price', 0),
@@ -79,7 +90,7 @@ with index.writer(limitmb=2048) as w:
             promo_id=row.get('promo_id'),
             disc_promo=row.get('disc_promo'),
             promo_name=row.get('promo_name'), promo_ngramword=row.get('promo_name'),
-            promo_tags=','.join(row.get('promo_tags')) if len(row.get('promo_tags', [])) > 0 else u'',
+            promo_tags=unicode(promotags),
             packet_id=int(row.get('packet_id')),
             packet_name=row.get('packet_name'),
             tpl_hotel_airline=row.get('tpl_hotel_airline'),
@@ -95,3 +106,7 @@ with index.writer(limitmb=2048) as w:
         )
         print(time.time() - t)
 print(time.time() - t)
+
+
+
+ # promo_tags=','.join(row.get('promo_tags')) if len(row.get('promo_tags', [])) > 0 else u'',

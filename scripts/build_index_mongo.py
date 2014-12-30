@@ -18,6 +18,8 @@
 """
 
 # Initiate db connection
+from collections import defaultdict
+import re
 from pymongo import MongoClient
 import mysql.connector as my
 import time
@@ -117,6 +119,35 @@ for promo in promos.find():
     # set untuk template_hotel_airline
     tpl_hotel_airline = ''.join(hotel_content)
 
+    #promo tag filter
+    def filter_tag(tags=None):
+        """fungsi filter promo tag menjadi dict type """
+        tagdict = defaultdict(list)
+        Besarkecil = lambda f: ' '.join(re.findall('[A-Z][^A-Z]*', f))
+        for obj in list(tags):
+            if len(obj.split(':')) == 2:
+                k, v = obj.split(':')
+                # filtering key Besarkecil, lowercase
+                k = str(Besarkecil(k)).lower()
+                # print(k)
+                if k in ['cari', 'jadwal', 'keberangkatan', 'maskapai', 'type', 'jumlah hari']:
+                    res = re.findall(r"(^[A-Z][^A-Z]+)|([^\W\d_]+|[\d+]+)", v)
+                    arres = []
+                    for resple in res:
+                        arres.append(filter(None, resple)[0])
+                        # print([e for e in resple])
+                    # print(' '.join(arres))
+                    tagdict[k].append(' '.join(arres))
+        return tagdict
+    multi_tag = promo.get('promo_tags', None)
+    # print(multi_tag)
+    if multi_tag is not None:
+        promo_tag = filter_tag(multi_tag)
+        promo_tag['hotel_mekkah'].extend(promo.get('hotel_mecca_name', '').split('/'))
+        promo_tag['hotel_madinah'].extend(promo.get('hotel_medinah_name', '').split('/'))
+    else:
+        promo_tag = []
+
     # chosen promo field
     mix_promo.update({'idx': promo.get('_id')}, {'$set': {
         'price': promo.get('starting_price', 0),
@@ -125,7 +156,9 @@ for promo in promos.find():
         'promo_id': promo.get('promo_id'),
         'disc_promo': str(int(promo.get('discount', 0))) + '%',
         'promo_name': promo.get('title'),
-        'promo_tags': promo.get('promo_tags', []),
+
+        'promo_tags': promo_tag,
+
         'packet_id': umrahPacket.get('packet_id'),
         'packet_name': umrahPacket.get('name', None),
 
@@ -141,7 +174,7 @@ for promo in promos.find():
         'status_promo': promo.get('status', 0)
     }}, upsert=True)
 
-    print(time.time() - t)
+    # print(time.time() - t)
 print(time.time() - t)
 
 mix_promo.remove({"packet_id": None})
