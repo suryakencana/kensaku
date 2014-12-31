@@ -164,12 +164,9 @@ def render_promo_by(ix, terms, req):
     with ix.searcher(weighting=TF_IDF()) as s:
         # og = qparser.OrGroup.factory(0.9)
         qp = qparser.QueryParser("content_packet", s.schema)
-        # qp = qparser.MultifieldParser(["promo_ngramword",
-        #                                "content_packet",
-        #                                "content_agent"], s.schema)
         qp = qparser.MultifieldParser(["tpl_hotel_airline",
                                        "promo_name",
-                                       "content_agent",
+                                       "content_packet",
                                        "promo_tags"], s.schema)
 
         try:
@@ -331,7 +328,7 @@ def render_promo_by(ix, terms, req):
                 "Name": None,
                 "IsTitle": True,
                 "HasImage": False,
-                "Header": "Paket Promo",
+                "Header": "Paket Umroh",
                 "ObjectId": 0,
                 "AgentId": 0,
                 "PacketId": 0,

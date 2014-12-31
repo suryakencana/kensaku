@@ -130,7 +130,7 @@ for promo in promos.find():
                 # filtering key Besarkecil, lowercase
                 k = str(Besarkecil(k)).lower()
                 # print(k)
-                if k in ['cari', 'jadwal', 'keberangkatan', 'maskapai', 'type', 'jumlah hari']:
+                if k in ['cari', 'jadwal', 'keberangkatan', 'maskapai', 'type', 'ibadah', 'jumlah hari', 'rute', 'tour']:
                     res = re.findall(r"(^[A-Z][^A-Z]+)|([^\W\d_]+|[\d+]+)", v)
                     arres = []
                     for resple in res:

@@ -61,8 +61,7 @@ def content_promo_tags(multi_tag):
         for v in value:
             stray.append(key)
             stray.append(v)
-    str = ' '.join(stray).lower()
-    return str
+    return ' '.join(stray).lower()
 
 if not os.path.exists(INDEXDIR):
     os.mkdir(INDEXDIR)
