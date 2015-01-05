@@ -160,195 +160,391 @@ def get_searcher():
         log.error(e.message)
 
 
+def get_list_biro(s, results, req):
+    """Fungsi list promo umroh berdasarkan biro"""
+    try:
+        feed = []
+        feeder = []
+        groupagent = []
+        agents = results.results.groups('agent_id')
+        # print(len(packets))
+
+        for i, agent in enumerate(agents):
+            if i > 10:
+                break
+            doclist = agents[agent]
+            # agent
+            print(agent)
+            paket = req.db['libraries']
+            pp = paket.find_one({'tag': 'AGENT', 'reference_id': agent})
+            if pp is not None:
+                #     print(packg)
+                print("By Agent {1}  Promo Total: {0}".format(pp['name'], len(doclist), pp['name']))
+
+                # for docnum in doclist:
+                #     print(s.stored_fields(docnum))
+                #     # for docnum, score in doclist[:5]:
+                nameo = unicode(pp.get('name', 'Nama Agen')).capitalize()
+                # group promo per agent
+                gpagent = [s.stored_fields(docnum)['promo_id'] for docnum in doclist]
+                # group price per promo untuk mencari range paling murah
+                gpprice = sorted([s.stored_fields(docnum)['price'] for docnum in doclist])
+                # group departure date per promo untuk mencari range tanggal keberangkatan paling awal
+                gpdate = sorted([s.stored_fields(docnum)['end_date'] for docnum in doclist])
+                # print(gpdate)
+                # print(gpdate[-1].isoformat())
+                groupagent.extend(gpagent)
+                feeder.append({
+                    "Name": nameo.upper(),
+                    "IsTitle": False,
+                    "HasImage": False,
+                    "Header": None,
+                    "ObjectId": agent,
+                    "AgentId": agent,
+                    "PacketId": 0,
+                    "NoOfPromo": len(doclist),
+                    "GroupOfPromo": gpagent,
+                    "PromoText": nameo,
+                    "GroupOfPrice": gpprice,
+                    "startPrice": gpprice[0],
+                    "endPrice": gpprice[-1],
+                    "startDate": gpdate[0].isoformat(),
+                    "endDate": gpdate[-1].isoformat(),
+                    "ResultText": nameo.upper(),
+                    "ResultAddress": nameo.upper(),
+                    "Image": None,
+                    "RetinaImage": None,
+                    "BgImageLoader": None,
+                    "tagging": "AGENT"
+                })
+        else:
+            print('break else')
+
+        """
+        kategori agent group promo
+        """
+        feed.append({
+            "Name": None,
+            "IsTitle": True,
+            "HasImage": False,
+            "Header": "Travel Umroh",
+            "ObjectId": 0,
+            "AgentId": 0,
+            "PacketId": 0,
+            "NoOfPromo": len(groupagent),
+            "GroupOfPromo": groupagent,
+            "PromoText": None,
+            "GroupOfPrice": 0,
+            "startPrice": 0,
+            "endPrice": 0,
+            "startDate": None,
+            "endDate": None,
+            "ResultText": None,
+            "ResultAddress": None,
+            "Image": None,
+            "RetinaImage": None,
+            "BgImageLoader": None,
+            "tagging": None
+        })
+
+        feed.extend(feeder)
+        return feed
+
+    except (KeyError, ValueError) as e:
+        qp = None
+        s._field_caches.clear()
+        log.error(e.message)
+
+
+def get_list_packet(s, results, req):
+    """Fungsi list promo umroh berdasarkan paket umroh"""
+
+    try:
+        feed = []
+        feeder = []
+        grouppacket = []
+        packets = results.results.groups('packet_id')
+        for i, packg in enumerate(packets):
+            if i > 10:
+                break
+            doclist = packets[packg]
+            paket = req.db['promo_idx']
+            pp = paket.find_one({'packet_id': packg})
+
+            if pp is not None:
+                # print(packg)
+                print("By Paket Packet {0} Promo Total: {1}".format(pp['packet_name'], len(doclist)))
+
+                # doclist = packets[packg]
+                # print(doclist)
+                # print("Packet Promo Total: {0}".format(len(doclist)))
+                # for docnum in doclist:
+                #     print(s.stored_fields(docnum)['promo_name'])
+                #     # for docnum, score in doclist[:5]:
+                nameo = unicode(pp['packet_name']).capitalize()
+                _objid = pp.get('packet_id', 0)
+                gppackets = [s.stored_fields(docnum)['promo_id'] for docnum in doclist]
+                # group price per promo untuk mencari range paling murah
+                gpprice = sorted([s.stored_fields(docnum)['price'] for docnum in doclist])
+                # group departure date per promo untuk mencari range tanggal keberangkatan paling awal
+                gpdate = sorted([s.stored_fields(docnum)['end_date'] for docnum in doclist])
+                print(gpdate)
+                grouppacket.extend(gppackets)
+                feeder.append({
+                    "Name": nameo.upper(),
+                    "IsTitle": False,
+                    "HasImage": False,
+                    "Header": None,
+                    "ObjectId": _objid,
+                    "AgentId": 0,
+                    "PacketId": _objid,
+                    "NoOfPromo": len(doclist),
+                    "GroupOfPromo": gppackets,
+                    "PromoText": nameo,
+                    "GroupOfPrice": gpprice,
+                    "startPrice": gpprice[0],
+                    "endPrice": gpprice[-1],
+                    "startDate": gpdate[0].isoformat(),
+                    "endDate": gpdate[-1].isoformat(),
+                    "ResultText": nameo,
+                    "ResultAddress": nameo,
+                    "Image": None,
+                    "RetinaImage": None,
+                    "BgImageLoader": None,
+                    "tagging": "PACKETS"
+                })
+        else:
+            print('break else')
+
+        """
+        kategori packet group promo
+        """
+        feed.append({
+            "Name": None,
+            "IsTitle": True,
+            "HasImage": False,
+            "Header": "Paket Umroh",
+            "ObjectId": 0,
+            "AgentId": 0,
+            "PacketId": 0,
+            "NoOfPromo": len(grouppacket),
+            "GroupOfPromo": grouppacket,
+            "PromoText": None,
+            "GroupOfPrice": 0,
+            "startPrice": 0,
+            "endPrice": 0,
+            "startDate": None,
+            "endDate": None,
+            "ResultText": None,
+            "ResultAddress": None,
+            "Image": None,
+            "RetinaImage": None,
+            "BgImageLoader": None,
+            "tagging": None
+        })
+
+        feed.extend(feeder)
+        return feed
+    except (KeyError, ValueError) as e:
+        qp = None
+        s._field_caches.clear()
+        log.error(e.message)
+
+
 def render_promo_by(ix, terms, req):
     with ix.searcher(weighting=TF_IDF()) as s:
         # og = qparser.OrGroup.factory(0.9)
-        qp = qparser.QueryParser("content_packet", s.schema)
-        qp = qparser.MultifieldParser(["tpl_hotel_airline",
-                                       "promo_name",
+        # qp = qparser.QueryParser("content_packet", s.schema)
+        qp = qparser.MultifieldParser(["promo_tags",
                                        "content_packet",
-                                       "promo_tags"], s.schema)
+                                       "promo_name",
+                                       "tpl_hotel_airline"], s.schema)
 
         try:
             q = qp.parse(terms)
-            sts = NumericRange("status_promo", 0, 1)
+            sts = NumericRange("status_promo", 1, 1)
             oldDate = DateRange("end_date", None, datetime.now())
             results = s.search_page(q, 1, 10, sortedby="status_promo", maptype=Best)
             results = s.search_page(q, 1, 10, filter=sts, mask=oldDate, groupedby=["packet_id", "agent_id"])
             q = results.results
 
-            print("=================================================================")
+
+            # print("=================================================================")
             feed = []
-            feeder = []
-            groupagent = []
-            agents = results.results.groups('agent_id')
-            # print(len(packets))
+            feed.extend(get_list_packet(s, results, req))
+            feed.extend(get_list_biro(s, results, req))
 
-            for i, agent in enumerate(agents):
-                if i > 10:
-                    break
-                doclist = agents[agent]
-                # agent
-                print(agent)
-                paket = req.db['libraries']
-                pp = paket.find_one({'tag': 'AGENT', 'reference_id': agent})
-                if pp is not None:
-                    #     print(packg)
-                    print("By Agent {1}  Promo Total: {0}".format(pp['name'], len(doclist), pp['name']))
+            # feeder = []
+            # groupagent = []
+            # agents = results.results.groups('agent_id')
+            # # print(len(packets))
+            #
+            # for i, agent in enumerate(agents):
+            #     if i > 10:
+            #         break
+            #     doclist = agents[agent]
+            #     # agent
+            #     print(agent)
+            #     paket = req.db['libraries']
+            #     pp = paket.find_one({'tag': 'AGENT', 'reference_id': agent})
+            #     if pp is not None:
+            #         #     print(packg)
+            #         print("By Agent {1}  Promo Total: {0}".format(pp['name'], len(doclist), pp['name']))
+            #
+            #         # for docnum in doclist:
+            #         #     print(s.stored_fields(docnum))
+            #         #     # for docnum, score in doclist[:5]:
+            #         nameo = unicode(pp.get('name', 'Nama Agen')).capitalize()
+            #         # group promo per agent
+            #         gpagent = [s.stored_fields(docnum)['promo_id'] for docnum in doclist]
+            #         # group price per promo untuk mencari range paling murah
+            #         gpprice = sorted([s.stored_fields(docnum)['price'] for docnum in doclist])
+            #         # group departure date per promo untuk mencari range tanggal keberangkatan paling awal
+            #         gpdate = sorted([s.stored_fields(docnum)['end_date'] for docnum in doclist])
+            #         # print(gpdate)
+            #         # print(gpdate[-1].isoformat())
+            #         groupagent.extend(gpagent)
+            #         feeder.append({
+            #             "Name": nameo.upper(),
+            #             "IsTitle": False,
+            #             "HasImage": False,
+            #             "Header": None,
+            #             "ObjectId": agent,
+            #             "AgentId": agent,
+            #             "PacketId": 0,
+            #             "NoOfPromo": len(doclist),
+            #             "GroupOfPromo": gpagent,
+            #             "PromoText": nameo,
+            #             "GroupOfPrice": gpprice,
+            #             "startPrice": gpprice[0],
+            #             "endPrice": gpprice[-1],
+            #             "startDate": gpdate[0].isoformat(),
+            #             "endDate": gpdate[-1].isoformat(),
+            #             "ResultText": nameo.upper(),
+            #             "ResultAddress": nameo.upper(),
+            #             "Image": None,
+            #             "RetinaImage": None,
+            #             "BgImageLoader": None,
+            #             "tagging": "AGENT"
+            #         })
+            # else:
+            #     print('break else')
+            #
+            # """
+            # kategori agent group promo
+            # """
+            # feed.append({
+            #     "Name": None,
+            #     "IsTitle": True,
+            #     "HasImage": False,
+            #     "Header": "Travel Umroh",
+            #     "ObjectId": 0,
+            #     "AgentId": 0,
+            #     "PacketId": 0,
+            #     "NoOfPromo": len(groupagent),
+            #     "GroupOfPromo": groupagent,
+            #     "PromoText": None,
+            #     "GroupOfPrice": 0,
+            #     "startPrice": 0,
+            #     "endPrice": 0,
+            #     "startDate": None,
+            #     "endDate": None,
+            #     "ResultText": None,
+            #     "ResultAddress": None,
+            #     "Image": None,
+            #     "RetinaImage": None,
+            #     "BgImageLoader": None,
+            #     "tagging": None
+            # })
+            #
+            # feed.extend(feeder)
 
-                    # for docnum in doclist:
-                    #     print(s.stored_fields(docnum))
-                    #     # for docnum, score in doclist[:5]:
-                    nameo = unicode(pp.get('name', 'Nama Agen')).capitalize()
-                    # group promo per agent
-                    gpagent = [s.stored_fields(docnum)['promo_id'] for docnum in doclist]
-                    # group price per promo untuk mencari range paling murah
-                    gpprice = sorted([s.stored_fields(docnum)['price'] for docnum in doclist])
-                    # group departure date per promo untuk mencari range tanggal keberangkatan paling awal
-                    gpdate = sorted([s.stored_fields(docnum)['end_date'] for docnum in doclist])
-                    # print(gpdate)
-                    # print(gpdate[-1].isoformat())
-                    groupagent.extend(gpagent)
-                    feeder.append({
-                        "Name": nameo.upper(),
-                        "IsTitle": False,
-                        "HasImage": False,
-                        "Header": None,
-                        "ObjectId": agent,
-                        "AgentId": agent,
-                        "PacketId": 0,
-                        "NoOfPromo": len(doclist),
-                        "GroupOfPromo": gpagent,
-                        "PromoText": nameo,
-                        "GroupOfPrice": gpprice,
-                        "startPrice": gpprice[0],
-                        "endPrice": gpprice[-1],
-                        "startDate": gpdate[0].isoformat(),
-                        "endDate": gpdate[-1].isoformat(),
-                        "ResultText": nameo.upper(),
-                        "ResultAddress": nameo.upper(),
-                        "Image": None,
-                        "RetinaImage": None,
-                        "BgImageLoader": None,
-                        "tagging": "AGENT"
-                    })
-            else:
-                print('break else')
+            # print("+++++++++++++++++++++++++++++++++++++++")
 
-            """
-            kategori agent group promo
-            """
-            feed.append({
-                "Name": None,
-                "IsTitle": True,
-                "HasImage": False,
-                "Header": "Travel Umroh",
-                "ObjectId": 0,
-                "AgentId": 0,
-                "PacketId": 0,
-                "NoOfPromo": len(groupagent),
-                "GroupOfPromo": groupagent,
-                "PromoText": None,
-                "GroupOfPrice": 0,
-                "startPrice": 0,
-                "endPrice": 0,
-                "startDate": None,
-                "endDate": None,
-                "ResultText": None,
-                "ResultAddress": None,
-                "Image": None,
-                "RetinaImage": None,
-                "BgImageLoader": None,
-                "tagging": None
-            })
+            # feeder = []
+            # grouppacket = []
+            # packets = results.results.groups('packet_id')
+            # for i, packg in enumerate(packets):
+            #     if i > 10:
+            #         break
+            #     doclist = packets[packg]
+            #     paket = req.db['promo_idx']
+            #     pp = paket.find_one({'packet_id': packg})
+            #
+            #     if pp is not None:
+            #         # print(packg)
+            #         print("By Paket Packet {0} Promo Total: {1}".format(pp['packet_name'], len(doclist)))
+            #
+            #         # doclist = packets[packg]
+            #         # print(doclist)
+            #         # print("Packet Promo Total: {0}".format(len(doclist)))
+            #         # for docnum in doclist:
+            #         #     print(s.stored_fields(docnum)['promo_name'])
+            #         #     # for docnum, score in doclist[:5]:
+            #         nameo = unicode(pp['packet_name']).capitalize()
+            #         _objid = pp.get('packet_id', 0)
+            #         gppackets = [s.stored_fields(docnum)['promo_id'] for docnum in doclist]
+            #         # group price per promo untuk mencari range paling murah
+            #         gpprice = sorted([s.stored_fields(docnum)['price'] for docnum in doclist])
+            #         # group departure date per promo untuk mencari range tanggal keberangkatan paling awal
+            #         gpdate = sorted([s.stored_fields(docnum)['end_date'] for docnum in doclist])
+            #         print(gpdate)
+            #         grouppacket.extend(gppackets)
+            #         feeder.append({
+            #             "Name": nameo.upper(),
+            #             "IsTitle": False,
+            #             "HasImage": False,
+            #             "Header": None,
+            #             "ObjectId": _objid,
+            #             "AgentId": 0,
+            #             "PacketId": _objid,
+            #             "NoOfPromo": len(doclist),
+            #             "GroupOfPromo": gppackets,
+            #             "PromoText": nameo,
+            #             "GroupOfPrice": gpprice,
+            #             "startPrice": gpprice[0],
+            #             "endPrice": gpprice[-1],
+            #             "startDate": gpdate[0].isoformat(),
+            #             "endDate": gpdate[-1].isoformat(),
+            #             "ResultText": nameo,
+            #             "ResultAddress": nameo,
+            #             "Image": None,
+            #             "RetinaImage": None,
+            #             "BgImageLoader": None,
+            #             "tagging": "PACKETS"
+            #         })
+            # else:
+            #     print('break else')
+            #
+            # """
+            # kategori packet group promo
+            # """
+            # feed.append({
+            #     "Name": None,
+            #     "IsTitle": True,
+            #     "HasImage": False,
+            #     "Header": "Paket Umroh",
+            #     "ObjectId": 0,
+            #     "AgentId": 0,
+            #     "PacketId": 0,
+            #     "NoOfPromo": len(grouppacket),
+            #     "GroupOfPromo": grouppacket,
+            #     "PromoText": None,
+            #     "GroupOfPrice": 0,
+            #     "startPrice": 0,
+            #     "endPrice": 0,
+            #     "startDate": None,
+            #     "endDate": None,
+            #     "ResultText": None,
+            #     "ResultAddress": None,
+            #     "Image": None,
+            #     "RetinaImage": None,
+            #     "BgImageLoader": None,
+            #     "tagging": None
+            # })
+            #
+            # feed.extend(feeder)
 
-            feed.extend(feeder)
-
-            print("+++++++++++++++++++++++++++++++++++++++")
-
-            feeder = []
-            grouppacket = []
-            packets = results.results.groups('packet_id')
-            for i, packg in enumerate(packets):
-                if i > 10:
-                    break
-                doclist = packets[packg]
-                paket = req.db['promo_idx']
-                pp = paket.find_one({'packet_id': packg})
-
-                if pp is not None:
-                    # print(packg)
-                    print("By Paket Packet {0} Promo Total: {1}".format(pp['packet_name'], len(doclist)))
-
-                    # doclist = packets[packg]
-                    # print(doclist)
-                    # print("Packet Promo Total: {0}".format(len(doclist)))
-                    # for docnum in doclist:
-                    #     print(s.stored_fields(docnum)['promo_name'])
-                    #     # for docnum, score in doclist[:5]:
-                    nameo = unicode(pp['packet_name']).capitalize()
-                    _objid = pp.get('packet_id', 0)
-                    gppackets = [s.stored_fields(docnum)['promo_id'] for docnum in doclist]
-                    # group price per promo untuk mencari range paling murah
-                    gpprice = sorted([s.stored_fields(docnum)['price'] for docnum in doclist])
-                    # group departure date per promo untuk mencari range tanggal keberangkatan paling awal
-                    gpdate = sorted([s.stored_fields(docnum)['end_date'] for docnum in doclist])
-                    print(gpdate)
-                    grouppacket.extend(gppackets)
-                    feeder.append({
-                        "Name": nameo.upper(),
-                        "IsTitle": False,
-                        "HasImage": False,
-                        "Header": None,
-                        "ObjectId": _objid,
-                        "AgentId": 0,
-                        "PacketId": _objid,
-                        "NoOfPromo": len(doclist),
-                        "GroupOfPromo": gppackets,
-                        "PromoText": nameo,
-                        "GroupOfPrice": gpprice,
-                        "startPrice": gpprice[0],
-                        "endPrice": gpprice[-1],
-                        "startDate": gpdate[0].isoformat(),
-                        "endDate": gpdate[-1].isoformat(),
-                        "ResultText": nameo,
-                        "ResultAddress": nameo,
-                        "Image": None,
-                        "RetinaImage": None,
-                        "BgImageLoader": None,
-                        "tagging": "PACKETS"
-                    })
-            else:
-                print('break else')
-
-            """
-            kategori packet group promo
-            """
-            feed.append({
-                "Name": None,
-                "IsTitle": True,
-                "HasImage": False,
-                "Header": "Paket Umroh",
-                "ObjectId": 0,
-                "AgentId": 0,
-                "PacketId": 0,
-                "NoOfPromo": len(grouppacket),
-                "GroupOfPromo": grouppacket,
-                "PromoText": None,
-                "GroupOfPrice": 0,
-                "startPrice": 0,
-                "endPrice": 0,
-                "startDate": None,
-                "endDate": None,
-                "ResultText": None,
-                "ResultAddress": None,
-                "Image": None,
-                "RetinaImage": None,
-                "BgImageLoader": None,
-                "tagging": None
-            })
-
-            feed.extend(feeder)
         except (KeyError, ValueError) as e:
             qp = None
             s._field_caches.clear()

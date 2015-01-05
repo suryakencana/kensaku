@@ -52,6 +52,7 @@
 <script type="text/javascript" src="${request.static_url('kensaku:static/kensaku/js/handlebars-v2.0.0.js')}"></script>
 <script type="text/javascript" src="${request.static_url('kensaku:static/kensaku/js/handlebars-helpers.js')}"></script>
 <script type="text/javascript" src="${request.static_url('kensaku:static/kensaku/js/jquery.auto-complete.js')}"></script>
+<script type="text/javascript" src="${request.static_url('kensaku:static/kensaku/js/hilitor.js')}"></script>
 <script id="acw" type="text/x-handlebars-template">
     <div class="autocomplete-suggestion"
          data-val="{{ResultText}} {{dateFormat startDate}} - {{dateFormat endDate}}"
@@ -82,6 +83,8 @@
 </script>
 <script type="text/javascript">
     $(function(){
+        var hightlander = new Hilitor('wacs');
+        hightlander.setMatchType("left");
         $('#kensaku').autoComplete({
             minChars: 1,
             source: function(term, response){
@@ -111,6 +114,10 @@
 
                 $('#startDate').datepicker('setDate', new Date(moment(self[0].dataset.sdate).format("MM/DD/YYYY")));
                 $('#endDate').datepicker('setDate', new Date(moment(self[0].dataset.edate).format("MM/DD/YYYY")));
+            },
+            onShow: function(term) {
+                console.log(term);
+                hightlander.apply(term);
             }
         });
         $( ".dt-pick" ).datepicker({
@@ -125,6 +132,8 @@
                         });
             }
         });
+
+
     });
 </script>
 </body>

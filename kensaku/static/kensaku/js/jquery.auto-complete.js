@@ -30,7 +30,7 @@
         return this.each(function(){
             var that = $(this);
             // sc = 'suggestions container'
-            that.sc = $('<div class="autocomplete-suggestions"></div>').addClass(o.menuClass);
+            that.sc = $('<div id="wacs" class="autocomplete-suggestions"></div>').addClass(o.menuClass);
             that.data('el', that.sc).data('autocomplete', that.attr('autocomplete'));
             that.attr('autocomplete', 'off');
             that.cache = {};
@@ -93,6 +93,7 @@
                         s += o.renderItem(data[i], val);
                     that.sc.html(s);
                     that.updateSC(0);
+                    o.onShow(val);
                 }
                 else
                     that.sc.hide();
@@ -174,6 +175,7 @@
             var re = new RegExp("(" + search.split(' ').join('|') + ")", "gi");
             return '<div class="autocomplete-suggestion" data-val="' + item + '">' + item.replace(re, "<strong>$1</strong>") + '</div>';
         },
-        onSelect: function(term, promo){}
+        onSelect: function(term, promo){},
+        onShow: function(term){}
     };
 }(jQuery));
