@@ -187,7 +187,5 @@ function Hilitor(id, tag, options)
     return options.onFinish.call(this);
   };
 }
-
-
   return Hilitor;
 }));
