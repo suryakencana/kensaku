@@ -162,6 +162,17 @@
 
                 }
             });
+
+            that.on('mousedown.autocomplete', function(){
+                var val = that.val();
+//                if (val.length >= o.minChars) {
+//                    if (val != that.last_val) {
+//                        suggest(that.cache[val]);
+//                    }
+//                }
+                o.onMousedown(val);
+            });
+
         });
     }
 
@@ -176,6 +187,7 @@
             return '<div class="autocomplete-suggestion" data-val="' + item + '">' + item.replace(re, "<strong>$1</strong>") + '</div>';
         },
         onSelect: function(term, promo){},
-        onShow: function(term){}
+        onShow: function(term){},
+        onMousedown: function(term){}
     };
 }(jQuery));

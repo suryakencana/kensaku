@@ -19,7 +19,7 @@
 from pymongo import MongoClient
 from whoosh import qparser, highlight
 from whoosh.qparser.dateparse import DateParserPlugin
-from whoosh.sorting import Facets
+from whoosh.sorting import Facets, Best
 from kensaku.views import SOURCEDIR
 
 

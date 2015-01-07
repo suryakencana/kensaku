@@ -37,7 +37,7 @@ class PromoIdxSchema(fields.SchemaClass):
     start_date = fields.DATETIME(stored=True, sortable=True)
     end_date = fields.DATETIME(stored=True, sortable=True)
     promo_id = fields.NUMERIC(int, stored=True, sortable=True)
-    disc_promo = fields.TEXT
+    disc_promo = fields.TEXT(stored=True)
     promo_name = fields.TEXT(stored=True, sortable=True, spelling=True, analyzer=anaNgram, phrase=False)
     promo_ngramword = fields.NGRAMWORDS
     promo_tags = fields.TEXT(sortable=True)

@@ -166,6 +166,9 @@ def get_list_biro(s, results, req):
         feed = []
         feeder = []
         groupagent = []
+        groupprice = []
+        groupdate = []
+        groupdisc = []
         agents = results.results.groups('agent_id')
         # print(len(packets))
 
@@ -191,9 +194,17 @@ def get_list_biro(s, results, req):
                 gpprice = sorted([s.stored_fields(docnum)['price'] for docnum in doclist])
                 # group departure date per promo untuk mencari range tanggal keberangkatan paling awal
                 gpdate = sorted([s.stored_fields(docnum)['end_date'] for docnum in doclist])
+                # group disc promo
+                gpdisc = sorted([s.stored_fields(docnum)['disc_promo'] for docnum in doclist])
+
                 # print(gpdate)
                 # print(gpdate[-1].isoformat())
+
+                """group list untuk params header"""
                 groupagent.extend(gpagent)
+                groupprice.extend(gpprice)
+                groupdate.extend(gpdate)
+                groupdisc.extend(gpdisc)
                 feeder.append({
                     "Name": nameo.upper(),
                     "IsTitle": False,
@@ -208,6 +219,9 @@ def get_list_biro(s, results, req):
                     "GroupOfPrice": gpprice,
                     "startPrice": gpprice[0],
                     "endPrice": gpprice[-1],
+                    "GroupOfDisc": gpdisc,
+                    "startDisc": gpdisc[0],
+                    "endDisc": gpdisc[-1],
                     "startDate": gpdate[0].isoformat(),
                     "endDate": gpdate[-1].isoformat(),
                     "ResultText": nameo.upper(),
@@ -234,13 +248,16 @@ def get_list_biro(s, results, req):
             "NoOfPromo": len(groupagent),
             "GroupOfPromo": groupagent,
             "PromoText": None,
-            "GroupOfPrice": 0,
-            "startPrice": 0,
-            "endPrice": 0,
-            "startDate": None,
-            "endDate": None,
-            "ResultText": None,
-            "ResultAddress": None,
+            "GroupOfPrice": groupprice,
+            "startPrice": groupprice[0] if len(groupprice) > 0 else 0,
+            "endPrice": groupprice[-1] if len(groupprice) > 0 else 0,
+            "GroupOfDisc": groupdisc,
+            "startDisc": groupdisc[0] if len(groupdisc) > 0 else 0,
+            "endDisc": groupdisc[-1] if len(groupdisc) > 0 else 0,
+            "startDate": groupdate[0].isoformat() if len(groupdate) > 0 else 0,
+            "endDate": groupdate[-1].isoformat() if len(groupdate) > 0 else 0,
+            "ResultText": "Semua Biro Umroh",
+            "ResultAddress": "Semua Biro Umroh",
             "Image": None,
             "RetinaImage": None,
             "BgImageLoader": None,
@@ -263,6 +280,9 @@ def get_list_packet(s, results, req):
         feed = []
         feeder = []
         grouppacket = []
+        groupprice = []
+        groupdate = []
+        groupdisc = []
         packets = results.results.groups('packet_id')
         for i, packg in enumerate(packets):
             if i > 10:
@@ -283,13 +303,22 @@ def get_list_packet(s, results, req):
                 #     # for docnum, score in doclist[:5]:
                 nameo = unicode(pp['packet_name']).capitalize()
                 _objid = pp.get('packet_id', 0)
+                """List untuk group fields params"""
                 gppackets = [s.stored_fields(docnum)['promo_id'] for docnum in doclist]
                 # group price per promo untuk mencari range paling murah
                 gpprice = sorted([s.stored_fields(docnum)['price'] for docnum in doclist])
                 # group departure date per promo untuk mencari range tanggal keberangkatan paling awal
                 gpdate = sorted([s.stored_fields(docnum)['end_date'] for docnum in doclist])
+                # group disc
+                gpdisc = sorted([s.stored_fields(docnum)['disc_promo'] for docnum in doclist])
+
                 print(gpdate)
+                """group list untuk params header"""
                 grouppacket.extend(gppackets)
+                groupprice.extend(gpprice)
+                groupdate.extend(gpdate)
+                groupdisc.extend(gpdisc)
+
                 feeder.append({
                     "Name": nameo.upper(),
                     "IsTitle": False,
@@ -304,6 +333,9 @@ def get_list_packet(s, results, req):
                     "GroupOfPrice": gpprice,
                     "startPrice": gpprice[0],
                     "endPrice": gpprice[-1],
+                    "GroupOfDisc": gpdisc,
+                    "startDisc": gpdisc[0],
+                    "endDisc": gpdisc[-1],
                     "startDate": gpdate[0].isoformat(),
                     "endDate": gpdate[-1].isoformat(),
                     "ResultText": nameo,
@@ -319,6 +351,7 @@ def get_list_packet(s, results, req):
         """
         kategori packet group promo
         """
+        groupprice = sorted(groupprice)
         feed.append({
             "Name": None,
             "IsTitle": True,
@@ -330,13 +363,16 @@ def get_list_packet(s, results, req):
             "NoOfPromo": len(grouppacket),
             "GroupOfPromo": grouppacket,
             "PromoText": None,
-            "GroupOfPrice": 0,
-            "startPrice": 0,
-            "endPrice": 0,
-            "startDate": None,
-            "endDate": None,
-            "ResultText": None,
-            "ResultAddress": None,
+            "GroupOfPrice": groupprice,
+            "startPrice": groupprice[0] if len(groupprice) > 0 else 0,
+            "endPrice": groupprice[-1] if len(groupprice) > 0 else 0,
+            "GroupOfDisc": groupdisc,
+            "startDisc": groupdisc[0] if len(groupdisc) > 0 else 0,
+            "endDisc": groupdisc[-1] if len(groupdisc) > 0 else 0,
+            "startDate": groupdate[0].isoformat() if len(groupdate) > 0 else 0,
+            "endDate": groupdate[-1].isoformat() if len(groupdate) > 0 else 0,
+            "ResultText": "Semua Paket Umroh",
+            "ResultAddress": "Semua Paket Umroh",
             "Image": None,
             "RetinaImage": None,
             "BgImageLoader": None,
@@ -443,6 +479,7 @@ def render_promo_by(ix, terms, req):
             #     "PacketId": 0,
             #     "NoOfPromo": len(groupagent),
             #     "GroupOfPromo": groupagent,
+            #     "GroupOfDiscount":
             #     "PromoText": None,
             #     "GroupOfPrice": 0,
             #     "startPrice": 0,
@@ -547,6 +584,7 @@ def render_promo_by(ix, terms, req):
 
         except (KeyError, ValueError) as e:
             qp = None
+            feed = None
             s._field_caches.clear()
             log.error(e.message)
 

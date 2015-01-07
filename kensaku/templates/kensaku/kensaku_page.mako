@@ -67,14 +67,14 @@
         <a class="anchor" tabindex="-1">
             <img src="{{Image}}" data-2x="{{RetinaImage}}" height="50" width="50" alt="">
             <ul class="list-plain align-left" >
-                <li><strong id="autoCompleteText">{{ResultText}}</strong></li>
+                <li><strong id="autoCompleteText">{{ResultText}},</strong></li>
             </ul>
-            <span>{{startDate}} - {{endDate}}</span><span class="align-right">Promo (<strong>{{NoOfPromo}}</strong>)</span>
+            <span>Harga mulai $ {{startPrice}}, Diskon hingga {{endDisc}}</span><span class="align-right">Promo (<strong>{{NoOfPromo}}</strong>)</span>
         </a>
         {{/HasImage}}
         {{^HasImage}}
         <a class="anchor" tabindex="-1">
-            <span class="align-left" id="autoCompleteText">{{ResultText}} {{dateFormat startDate}} - {{dateFormat endDate}}</span>
+            <span class="align-left" id="autoCompleteText">{{ResultText}}, Harga mulai $ {{startPrice}}, Diskon hingga {{endDisc}}</span>
             <span class="align-right">Promo (<strong>{{NoOfPromo}}</strong>)</span>
         </a>
         {{/HasImage}}
