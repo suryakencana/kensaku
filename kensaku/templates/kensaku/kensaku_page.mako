@@ -54,29 +54,39 @@
 <script type="text/javascript" src="${request.static_url('kensaku:static/kensaku/js/jquery.auto-complete.js')}"></script>
 <script type="text/javascript" src="${request.static_url('kensaku:static/kensaku/js/hilitor.js')}"></script>
 <script id="acw" type="text/x-handlebars-template">
-    <div class="autocomplete-suggestion"
-         data-val="{{ResultText}} {{dateFormat startDate}} - {{dateFormat endDate}}"
+    <div class="autocomplete-suggestion acomSug acomZZ"
+         data-val="{{ResultText}}"
          data-promo="{{ GroupOfPromo }}"
          data-sdate="{{startDate}}"
-         data-edate="{{endDate}}">
+         data-edate="{{endDate}}"
+         data-price="{{startPrice}}"
+            >
         {{#IsTitle}}
-        <span>{{Header}} <span class="align-right">Promo (<strong>{{NoOfPromo}}</strong>)</span></span>
+        <span class="headTit">{{Header}} <span class="align-right"><strong class="pull-right">{{NoOfPromo}} Paket</strong></span></span>
         {{/IsTitle}}
         {{^IsTitle}}
-        {{#HasImage}}
-        <a class="anchor" tabindex="-1">
-            <img src="{{Image}}" data-2x="{{RetinaImage}}" height="50" width="50" alt="">
-            <ul class="list-plain align-left" >
-                <li><strong id="autoCompleteText">{{ResultText}},</strong></li>
-            </ul>
-            <span>Harga mulai $ {{startPrice}}, Diskon hingga {{endDisc}}</span><span class="align-right">Promo (<strong>{{NoOfPromo}}</strong>)</span>
-        </a>
-        {{/HasImage}}
+##        {{#HasImage}}
+##        <a class="anchor anchorLink acomZZXX" tabindex="-1">
+##            <img src="{{Image}}" data-2x="{{RetinaImage}}" height="50" width="50" alt="">
+##            <ul class="list-plain align-left">
+##                <li><strong id="autoCompleteText">{{ResultText}}, Harga mulai $ {{startPrice}}, Diskon Hingga {{endDisc}}</strong></li>
+##            </ul>
+##            <span class="align-right"><strong class="pull-right">{{NoOfPromo}} Paket</strong></span>
+##        </a>
+##        {{/HasImage}}
         {{^HasImage}}
-        <a class="anchor" tabindex="-1">
-            <span class="align-left" id="autoCompleteText">{{ResultText}}, Harga mulai $ {{startPrice}}, Diskon hingga {{endDisc}}</span>
-            <span class="align-right">Promo (<strong>{{NoOfPromo}}</strong>)</span>
-        </a>
+        {{#IsDefault}}
+            <a class="anchor anchorLink" tabindex="-1">
+                <span class="align-left" id="autoCompleteText">{{ResultText}} </span>
+                <span class="align-right"><strong class="pull-right">Harga mulai $ {{startPrice}}, Diskon Hingga {{endDisc}}%</strong></span>
+            </a>
+        {{/IsDefault}}
+        {{^IsDefault}}
+            <a class="anchor anchorLink" tabindex="-1">
+                <span class="align-left" id="autoCompleteText">{{ResultText}}, Harga mulai $ {{startPrice}}, Diskon Hingga {{endDisc}} </span>
+                <span class="align-right"><strong class="pull-right">{{NoOfPromo}} Paket</strong></span>
+            </a>
+        {{/IsDefault}}
         {{/HasImage}}
         {{/IsTitle}}
     </div>
@@ -86,7 +96,8 @@
         var hightlander = new Hilitor('wacs');
         hightlander.setMatchType("left");
         $('#kensaku').autoComplete({
-            minChars: 1,
+            minChars: 0,
+            wrapperHeader: '<div class="header-acs"><span>ini header nya asyik</span></div>',
             source: function(term, response){
                 try { xhr.abort(); } catch(e){}
                 var xhr = $.getJSON('${request.route_url('results')}', { q: term }, function(data){ response(data); });

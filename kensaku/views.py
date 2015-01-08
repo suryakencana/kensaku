@@ -2,6 +2,7 @@ import json
 import logging
 import os
 from datetime import datetime
+from pymongo import DESCENDING
 
 from pyramid.response import Response
 from pyramid.view import view_config
@@ -74,8 +75,8 @@ def valid_button(request):
     dataSet = 0
     try:
         args = request.params.get('arrPromo', '')
-        start = request.params.get('startDate', datetime.now().isoformat())
-        end = request.params.get('endDate', datetime.now().isoformat())
+        start = request.params.get('startDate', datetime.now())
+        end = request.params.get('endDate', datetime.now())
         whatPrice = request.params.get('whatPrice', '').split('~')
         arrPromo = args.split(',')
 
@@ -148,9 +149,102 @@ def search(request):
 def results(request):
     try:
         terms = request.params.get("q", '')
+        if len(terms) <= 0:
+            print('log terms kosong')
+            # default term kosong
+            return render_empty_term(req=request)
         return render_promo_by(get_searcher(), terms, req=request)
     except(KeyError, ValueError) as e:
         log.error(e.message)
+
+
+def render_empty_term(req):
+    try:
+        feed = []
+        feeder = []
+        grouppop = []
+        groupprice = []
+        groupdisc = []
+        groupdate = []
+        promo = req.db['umrah_promotions']
+        results = promo.find({
+            'departure_date': {
+                '$gte': datetime.now()
+            },
+            'status': 1
+        }).sort('viewed', DESCENDING).limit(10)
+        # print(datetime.now())
+        # for row in results:
+        #     print(row)
+        if results:
+            for row in results:
+                grouppop.extend([row.get('promo_id', None)])
+                groupprice.extend([row.get('starting_price', 0)])
+                groupdisc.extend([row.get('discount', 0)])
+                groupdate.extend([row.get('departure_date', 0).isoformat()])
+                feeder.append({
+                    "Name": str(row.get('title', 'No title')).capitalize(),
+                    "IsDefault": True,
+                    "IsTitle": False,
+                    "HasImage": False,
+                    "Header": None,
+                    "ObjectId": None,
+                    "AgentId": None,
+                    "PacketId": row.get('promo_id', None),
+                    "NoOfPromo": 1,
+                    "GroupOfPromo": 1,
+                    "PromoText": str(row.get('title', 'No title')),
+                    "GroupOfPrice": 0,
+                    "startPrice": row.get('starting_price', 0),
+                    "endPrice": 0,
+                    "GroupOfDisc": 0,
+                    "startDisc": row.get('discount', 0),
+                    "endDisc": row.get('discount', 0),
+                    "startDate": row.get('departure_date', 0).isoformat(),
+                    "endDate": row.get('departure_date', 0).isoformat(),
+                    "ResultText": str(row.get('title', 'No title')).upper(),
+                    "ResultAddress": str(row.get('title', 'No title')).upper(),
+                    "Image": None,
+                    "RetinaImage": None,
+                    "BgImageLoader": None,
+                    "tagging": "PAKET"
+                })
+
+            feed.append({
+                "Name": None,
+                "IsDefault": True,
+                "IsTitle": True,
+                "HasImage": False,
+                "Header": "Paket Populer",
+                "ObjectId": 0,
+                "AgentId": 0,
+                "PacketId": 0,
+                "NoOfPromo": len(grouppop),
+                "GroupOfPromo": grouppop,
+                "PromoText": None,
+                "GroupOfPrice": groupprice,
+                "startPrice": groupprice[0] if len(groupprice) > 0 else 0,
+                "endPrice": groupprice[-1] if len(groupprice) > 0 else 0,
+                "GroupOfDisc": groupdisc,
+                "startDisc": groupdisc[0] if len(groupdisc) > 0 else 0,
+                "endDisc": groupdisc[-1] if len(groupdisc) > 0 else 0,
+                "startDate": groupdate[0] if len(groupdate) > 0 else 0,
+                "endDate": groupdate[-1] if len(groupdate) > 0 else 0,
+                "ResultText": "Semua Paket Umroh Populer",
+                "ResultAddress": "Semua Paket Umroh Populer",
+                "Image": None,
+                "RetinaImage": None,
+                "BgImageLoader": None,
+                "tagging": None
+            })
+            feed.extend(feeder)
+    except (KeyError, ValueError) as e:
+        log.error(e.message)
+    return Response(
+        body=json.dumps(feed),
+        status='201 Created',
+        charset='UTF-8',
+        content_type='application/json;')
 
 
 def get_searcher():
@@ -207,6 +301,7 @@ def get_list_biro(s, results, req):
                 groupdisc.extend(gpdisc)
                 feeder.append({
                     "Name": nameo.upper(),
+                    "IsDefault": False,
                     "IsTitle": False,
                     "HasImage": False,
                     "Header": None,
@@ -239,6 +334,7 @@ def get_list_biro(s, results, req):
         """
         feed.append({
             "Name": None,
+            "IsDefault": False,
             "IsTitle": True,
             "HasImage": False,
             "Header": "Travel Umroh",
@@ -321,6 +417,7 @@ def get_list_packet(s, results, req):
 
                 feeder.append({
                     "Name": nameo.upper(),
+                    "IsDefault": False,
                     "IsTitle": False,
                     "HasImage": False,
                     "Header": None,
@@ -354,6 +451,7 @@ def get_list_packet(s, results, req):
         groupprice = sorted(groupprice)
         feed.append({
             "Name": None,
+            "IsDefault": False,
             "IsTitle": True,
             "HasImage": False,
             "Header": "Paket Umroh",

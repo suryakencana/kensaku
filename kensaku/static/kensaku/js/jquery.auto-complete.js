@@ -36,6 +36,31 @@
             that.cache = {};
             that.last_val = '';
 
+            that.cronData = function(e) {
+//                if (!~$.inArray(e.which, [27, 38, 40, 37, 39])) {
+                var val = that.val();
+                if (val.length <= 0) {
+                    console.log(val);
+                    clearTimeout(that.timer);
+//                        fitur optional cache history last choice ;-D
+//                            if (o.cache) {
+//                                if (val in that.cache) { suggest(that.cache[val]); return; }
+//                                // no requests if previous suggestions were empty
+//                                for (i=1; i<val.length-o.minChars; i++) {
+//                                    var part = val.slice(0, val.length-i);
+//                                    if (part in that.cache && !that.cache[part].length) { suggest([]); return; }
+//                                }
+//                            }
+                    that.timer = setTimeout(function(){ o.source(val, suggest) }, o.delay);
+
+//                    } else {
+//                        that.last_val = val;
+//                        that.sc.hide();
+//                    }
+
+                }
+            }
+
             that.updateSC = function(resize, next){
                 that.sc.css({
                     top: that.offset().top + that.outerHeight(),
@@ -84,11 +109,28 @@
                 that.sc.hide();
             });
 
+            function cacheSG(data){
+                var val = that.val();
+                that.cache[val] = data;
+                if (data.length >= 0) {
+                    var s = '';
+                    s = o.wrapperHeader;
+                    for (var i=0;i<data.length;i++)
+                        s += o.renderItem(data[i], val);
+                    that.sc.html(s);
+                    that.updateSC(0);
+                    o.onShow(val);
+                }
+                else
+                    that.sc.hide();
+            }
+
             function suggest(data){
                 var val = that.val();
                 that.cache[val] = data;
                 if (data.length && val.length >= o.minChars) {
                     var s = '';
+                    if(val.length <= 0) s = o.wrapperHeader;
                     for (var i=0;i<data.length;i++)
                         s += o.renderItem(data[i], val);
                     that.sc.html(s);
@@ -163,13 +205,9 @@
                 }
             });
 
-            that.on('mousedown.autocomplete', function(){
+            that.on('mousedown.autocomplete', function(e){
                 var val = that.val();
-//                if (val.length >= o.minChars) {
-//                    if (val != that.last_val) {
-//                        suggest(that.cache[val]);
-//                    }
-//                }
+                that.cronData(e);
                 o.onMousedown(val);
             });
 
@@ -182,6 +220,7 @@
         delay: 100,
         cache: 1,
         menuClass: '',
+        wrapperHeader:'',
         renderItem: function (item, search){
             var re = new RegExp("(" + search.split(' ').join('|') + ")", "gi");
             return '<div class="autocomplete-suggestion" data-val="' + item + '">' + item.replace(re, "<strong>$1</strong>") + '</div>';
