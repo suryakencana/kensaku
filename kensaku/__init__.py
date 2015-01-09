@@ -24,10 +24,11 @@ def main(global_config, **settings):
     config.add_static_view('static', 'static', cache_max_age=3600)
     config.add_route('home', '/')
     config.add_route('kensaku', '/kensaku')
-    config.add_route('results', '/results')
     config.add_route('promo', '/promo/{ref_tag}/{ref_id}')
     config.add_route('upromo', '/promo/{id}')
     config.add_route('suggest', '/sg')
-    config.add_route('valid', '/v')
+    # set familiar url standart API
+    config.add_route('results', '/api/v1/result')
+    config.add_route('valid', '/api/v1/valid')
     config.scan()
     return config.make_wsgi_app()

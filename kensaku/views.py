@@ -182,17 +182,18 @@ def render_empty_term(req):
                 groupprice.extend([row.get('starting_price', 0)])
                 groupdisc.extend([row.get('discount', 0)])
                 groupdate.extend([row.get('departure_date', 0).isoformat()])
+                nameo = row.get('title', 'No title').split('-')[1]
                 feeder.append({
-                    "Name": str(row.get('title', 'No title')).capitalize(),
+                    "Name": row.get('title', 'No title'),
                     "IsDefault": True,
                     "IsTitle": False,
                     "HasImage": False,
                     "Header": None,
-                    "ObjectId": None,
+                    "ObjectId": row.get('promo_id', None),
                     "AgentId": None,
                     "PacketId": row.get('promo_id', None),
                     "NoOfPromo": 1,
-                    "GroupOfPromo": 1,
+                    "GroupOfPromo": row.get('promo_id', None),
                     "PromoText": str(row.get('title', 'No title')),
                     "GroupOfPrice": 0,
                     "startPrice": row.get('starting_price', 0),
@@ -202,8 +203,8 @@ def render_empty_term(req):
                     "endDisc": row.get('discount', 0),
                     "startDate": row.get('departure_date', 0).isoformat(),
                     "endDate": row.get('departure_date', 0).isoformat(),
-                    "ResultText": str(row.get('title', 'No title')).upper(),
-                    "ResultAddress": str(row.get('title', 'No title')).upper(),
+                    "ResultText": nameo,
+                    "ResultAddress": nameo,
                     "Image": None,
                     "RetinaImage": None,
                     "BgImageLoader": None,

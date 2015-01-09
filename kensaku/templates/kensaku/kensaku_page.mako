@@ -50,9 +50,10 @@
 <script type="text/javascript" src="${request.static_url('kensaku:static/kensaku/js/jquery-ui.min.js')}"></script>
 <script type="text/javascript" src="${request.static_url('kensaku:static/kensaku/js/moment.min.js')}"></script>
 <script type="text/javascript" src="${request.static_url('kensaku:static/kensaku/js/handlebars-v2.0.0.js')}"></script>
-<script type="text/javascript" src="${request.static_url('kensaku:static/kensaku/js/handlebars-helpers.js')}"></script>
+<script type="text/javascript" src="${request.static_url('kensaku:static/kensaku/js/swag.min.js')}"></script>
 <script type="text/javascript" src="${request.static_url('kensaku:static/kensaku/js/jquery.auto-complete.js')}"></script>
 <script type="text/javascript" src="${request.static_url('kensaku:static/kensaku/js/hilitor.js')}"></script>
+<script>Swag.registerHelpers(Handlebars);</script>
 <script id="acw" type="text/x-handlebars-template">
     <div class="autocomplete-suggestion acomSug acomZZ"
          data-val="{{ResultText}}"
@@ -65,27 +66,34 @@
         <span class="headTit">{{Header}} <span class="align-right"><strong class="pull-right">{{NoOfPromo}} Paket</strong></span></span>
         {{/IsTitle}}
         {{^IsTitle}}
-##        {{#HasImage}}
-##        <a class="anchor anchorLink acomZZXX" tabindex="-1">
-##            <img src="{{Image}}" data-2x="{{RetinaImage}}" height="50" width="50" alt="">
-##            <ul class="list-plain align-left">
-##                <li><strong id="autoCompleteText">{{ResultText}}, Harga mulai $ {{startPrice}}, Diskon Hingga {{endDisc}}</strong></li>
-##            </ul>
-##            <span class="align-right"><strong class="pull-right">{{NoOfPromo}} Paket</strong></span>
-##        </a>
-##        {{/HasImage}}
-        {{^HasImage}}
+        ##        {{#HasImage}}
+        ##        <a class="anchor anchorLink acomZZXX" tabindex="-1">
+        ##            <img src="{{Image}}" data-2x="{{RetinaImage}}" height="50" width="50" alt="">
+        ##            <ul class="list-plain align-left">
+        ##                <li><strong id="autoCompleteText">{{ResultText}}, Harga mulai $ {{startPrice}}, Diskon Hingga {{endDisc}}</strong></li>
+        ##            </ul>
+        ##            <span class="align-right"><strong class="pull-right">{{NoOfPromo}} Paket</strong></span>
+        ##        </a>
+        ##        {{/HasImage}}
+                {{^HasImage}}
         {{#IsDefault}}
-            <a class="anchor anchorLink" tabindex="-1">
-                <span class="align-left" id="autoCompleteText">{{ResultText}} </span>
-                <span class="align-right"><strong class="pull-right">Harga mulai $ {{startPrice}}, Diskon Hingga {{endDisc}}%</strong></span>
-            </a>
+        <a class="anchor anchorLink" tabindex="-1">
+            <span class="align-left" id="autoCompleteText">{{capitalizeEach ResultText}} </span>
+            <span class="align-right"><strong class="pull-right">Harga mulai $ {{startPrice}}, Diskon Hingga {{endDisc}}%</strong></span>
+        </a>
         {{/IsDefault}}
         {{^IsDefault}}
-            <a class="anchor anchorLink" tabindex="-1">
-                <span class="align-left" id="autoCompleteText">{{ResultText}}, Harga mulai $ {{startPrice}}, Diskon Hingga {{endDisc}} </span>
-                <span class="align-right"><strong class="pull-right">{{NoOfPromo}} Paket</strong></span>
-            </a>
+        <a class="anchor anchorLink" tabindex="-1">
+            ## contoh sein iki
+            {{#is tagging 'PACKETS'}}
+            <i class="fa fa-calendar">1</i>
+            {{else}}
+            <i class="fa fa-facebook">3</i>
+            {{/is}}
+            <span class="align-left" id="autoCompleteText">{{capitalizeEach ResultText}}, Harga mulai $ {{startPrice}}, Diskon Hingga {{endDisc}} </span>
+
+            <span class="align-right"><strong class="pull-right">{{NoOfPromo}} Paket</strong></span>
+        </a>
         {{/IsDefault}}
         {{/HasImage}}
         {{/IsTitle}}
@@ -135,16 +143,20 @@
             dateFormat: "dd-mm-yy",
             onClose: function( selectedDate ) {
                 var arr = $('#arrPromo').val();
-                $.getJSON('${request.route_url('valid')}',
-                        { arrPromo: arr },
+                var startDate = moment(new Date(sdate)).format('DD-MM-YYYY');
+                var endDate = moment(new Date(edate)).format('DD-MM-YYYY');;
+                var price = $('#whatPrice').val();
+                $.ajax({
+                            url : '${request.route_url('valid')}',
+                            method: 'POST',
+                            data : { arrPromo: arr }
+                        },
                         function(data){
                             console.log(data);
                             $('#btn-cari').val('Total Promo: (' + data.data.count + ')');
                         });
             }
         });
-
-
     });
 </script>
 </body>
