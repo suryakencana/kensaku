@@ -154,7 +154,7 @@ for promo in promos.find():
         'start_date': promo.get('start_date'),
         'end_date': promo.get('departure_date'),
         'promo_id': promo.get('promo_id'),
-        'disc_promo': str(int(promo.get('discount', 0))) + '%',
+        'disc_promo': int(promo.get('discount', 0)),
         'promo_name': promo.get('title'),
 
         'promo_tags': promo_tag,

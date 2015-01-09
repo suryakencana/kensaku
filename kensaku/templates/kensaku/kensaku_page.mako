@@ -79,7 +79,7 @@
         {{#IsDefault}}
         <a class="anchor anchorLink" tabindex="-1">
             <span class="align-left" id="autoCompleteText">{{capitalizeEach ResultText}} </span>
-            <span class="align-right"><strong class="pull-right">Harga mulai $ {{startPrice}}, Diskon Hingga {{endDisc}}%</strong></span>
+            <span class="align-right"><strong class="pull-right">Harga mulai $ {{startPrice}}, Diskon Hingga $ {{endDisc}}</strong></span>
         </a>
         {{/IsDefault}}
         {{^IsDefault}}
@@ -90,7 +90,7 @@
             {{else}}
             <i class="fa fa-facebook">3</i>
             {{/is}}
-            <span class="align-left" id="autoCompleteText">{{capitalizeEach ResultText}}, Harga mulai $ {{startPrice}}, Diskon Hingga {{endDisc}} </span>
+            <span class="align-left" id="autoCompleteText">{{capitalizeEach ResultText}}, Harga mulai $ {{startPrice}}, Diskon Hingga $ {{endDisc}} </span>
 
             <span class="align-right"><strong class="pull-right">{{NoOfPromo}} Paket</strong></span>
         </a>
