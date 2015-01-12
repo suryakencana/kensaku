@@ -27,8 +27,15 @@ def main(global_config, **settings):
     config.add_route('promo', '/promo/{ref_tag}/{ref_id}')
     config.add_route('upromo', '/promo/{id}')
     config.add_route('suggest', '/sg')
+
     # set familiar url standart API
     config.add_route('results', '/api/v1/result')
     config.add_route('valid', '/api/v1/valid')
+
+    # set inspeksi data
+    config.add_route('results_build', '/api/beta/result')
+    config.add_route('valid_build', '/api/beta/valid')
+    config.add_route('kensaku_build', '/ken-beta')
+
     config.scan()
     return config.make_wsgi_app()

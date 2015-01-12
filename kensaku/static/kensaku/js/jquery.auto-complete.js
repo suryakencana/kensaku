@@ -37,7 +37,7 @@
             that.last_val = '';
 
             that.cronData = function(e) {
-//                if (!~$.inArray(e.which, [27, 38, 40, 37, 39])) {
+                if (!~$.inArray(e.which, [27, 38, 40, 37, 39])) {
                 var val = that.val();
                 if (val.length <= 0) {
                     console.log(val);
@@ -56,8 +56,7 @@
 //                    } else {
 //                        that.last_val = val;
 //                        that.sc.hide();
-//                    }
-
+                    }
                 }
             }
 
@@ -196,12 +195,13 @@
                                 }
                             }
                             that.timer = setTimeout(function(){ o.source(val, suggest) }, o.delay);
+                        } else {
+//                            that.cronData(e);
                         }
                     } else {
                         that.last_val = val;
                         that.sc.hide();
                     }
-
                 }
             });
 

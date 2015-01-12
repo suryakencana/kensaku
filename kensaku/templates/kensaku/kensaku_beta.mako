@@ -109,7 +109,7 @@
             source: function(term, response){
                 try { xhr.abort(); } catch(e){}
                 var xhr = $.ajax({
-                    url: '${request.route_url('results')}',
+                    url: '${request.route_url('results_build')}',
                     method: 'POST',
                     data: { q: term },
                     success: function (data) {
