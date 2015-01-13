@@ -6,6 +6,7 @@ from pymongo import DESCENDING
 
 from pyramid.response import Response
 from pyramid.view import view_config
+from slugify import slugify
 from whoosh import index, qparser
 from whoosh.query.ranges import NumericRange, DateRange
 from whoosh.scoring import TF_IDF
@@ -165,6 +166,8 @@ def render_empty_term(req):
                 groupdisc.extend([row.get('discount', 0)])
                 groupdate.extend([row.get('departure_date', 0).isoformat()])
                 nameo = row.get('title', 'No title').split('-')[1]
+                agent_slug = row.get('agent_slug', None)
+                airline_name = slugify(row.get('airline_name', '').split("/")[0], to_lower=True)
                 feeder.append({
                     "Name": row.get('title', 'No title'),
                     "IsDefault": True,
@@ -173,6 +176,8 @@ def render_empty_term(req):
                     "Header": None,
                     "ObjectId": row.get('promo_id', None),
                     "AgentId": None,
+                    "agent_slug": agent_slug,
+                    "airline_name": airline_name,
                     "PacketId": row.get('promo_id', None),
                     "NoOfPromo": 1,
                     "GroupOfPromo": row.get('promo_id', None),
@@ -201,6 +206,8 @@ def render_empty_term(req):
                 "Header": "Paket Populer",
                 "ObjectId": 0,
                 "AgentId": 0,
+                "agent_slug": None,
+                "airline_name": None,
                 "PacketId": 0,
                 "NoOfPromo": len(grouppop),
                 "GroupOfPromo": grouppop,
@@ -268,6 +275,9 @@ def get_list_biro(s, results, req):
                 groupdisc.extend(gpdisc)
                 if i <= 10:
                     agent_city = sorted([s.stored_fields(docnum)['agent_city'] for docnum in doclist])
+                    agent_slug = sorted([s.stored_fields(docnum)['agent_slug'] for docnum in doclist])
+                    airline_name = slugify(str(sorted([s.stored_fields(docnum)['airline_name']
+                                               for docnum in doclist])[0]).split("/")[0], to_lower=True)
                     feeder.append({
                         "Name": nameo.upper(),
                         "IsDefault": False,
@@ -277,6 +287,8 @@ def get_list_biro(s, results, req):
                         "ObjectId": agent,
                         "AgentId": agent,
                         "agent_city": agent_city[0],
+                        "agent_slug": agent_slug[0],
+                        "airline_name": airline_name,
                         "PacketId": 0,
                         "NoOfPromo": len(doclist),
                         "GroupOfPromo": gpagent,
@@ -308,6 +320,8 @@ def get_list_biro(s, results, req):
             "ObjectId": 0,
             "AgentId": 0,
             "agent_city": None,
+            "agent_slug": None,
+            "airline_name": None,
             "PacketId": 0,
             "NoOfPromo": len(groupagent),
             "GroupOfPromo": groupagent,
@@ -367,6 +381,9 @@ def get_list_packet(s, results, req):
                 groupdisc.extend(gpdisc)
                 if i <= 10:
                     agent_city = sorted([s.stored_fields(docnum)['agent_city'] for docnum in doclist])
+                    agent_slug = sorted([s.stored_fields(docnum)['agent_slug'] for docnum in doclist])
+                    airline_name = slugify(str(sorted([s.stored_fields(docnum)['airline_name']
+                                               for docnum in doclist])[0]).split("/")[0], to_lower=True)
                     feeder.append({
                         "Name": nameo.upper(),
                         "IsDefault": False,
@@ -376,6 +393,8 @@ def get_list_packet(s, results, req):
                         "ObjectId": _objid,
                         "AgentId": 0,
                         "agent_city": agent_city[0],
+                        "agent_slug": agent_slug[0],
+                        "airline_name": airline_name,
                         "PacketId": _objid,
                         "NoOfPromo": len(doclist),
                         "GroupOfPromo": gppackets,
@@ -407,6 +426,8 @@ def get_list_packet(s, results, req):
             "Header": "Paket Umroh",
             "ObjectId": 0,
             "AgentId": 0,
+            "agent_slug": None,
+            "airline_name": None,
             "PacketId": 0,
             "NoOfPromo": len(grouppacket),
             "GroupOfPromo": grouppacket,
@@ -517,7 +538,7 @@ def render_promo_beta(ix, terms, req):
             #
             # for i, agent in enumerate(agents):
             # if i > 10:
-            #         break
+            # break
             #     doclist = agents[agent]
             #     # agent
             #     print(agent)
@@ -716,7 +737,7 @@ def get_list_biro_beta(s, results, req):
             paket = req.db['libraries']
             pp = paket.find_one({'tag': 'AGENT', 'reference_id': agent})
             if pp is not None:
-                #     print(packg)
+                # print(packg)
                 # print("By Agent {1}  Promo Total: {0}".format(pp['name'], len(doclist), pp['name']))
 
                 # for docnum in doclist:
@@ -839,7 +860,7 @@ def get_list_packet_beta(s, results, req):
                 # print(doclist)
                 # print("Packet Promo Total: {0}".format(len(doclist)))
                 # for docnum in doclist:
-                #     print(s.stored_fields(docnum)['promo_name'])
+                # print(s.stored_fields(docnum)['promo_name'])
                 #     # for docnum, score in doclist[:5]:
                 nameo = unicode(pp['packet_name']).capitalize()
                 _objid = pp.get('packet_id', 0)

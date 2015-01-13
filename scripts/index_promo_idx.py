@@ -48,9 +48,9 @@ class PromoIdxSchema(fields.SchemaClass):
     agent_id = fields.NUMERIC(int, stored=True, sortable=True)
     agent_name = fields.TEXT(stored=True, sortable=True)
     agent_city = fields.TEXT(stored=True, sortable=True)
-    agent_slug = fields.TEXT(sortable=True)
+    agent_slug = fields.TEXT(stored=True, sortable=True)
     content_agent = fields.TEXT(sortable=True, analyzer=anaNgram, phrase=False)
-    airline_name = fields.TEXT(sortable=True)
+    airline_name = fields.TEXT(stored=True, sortable=True)
     status_promo = fields.NUMERIC(int, stored=True, sortable=True)
     # status_promo = fields.COLUMN(NumericColumn("i"))
 
