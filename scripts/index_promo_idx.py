@@ -50,6 +50,7 @@ class PromoIdxSchema(fields.SchemaClass):
     agent_city = fields.TEXT(stored=True, sortable=True)
     agent_slug = fields.TEXT(stored=True, sortable=True)
     content_agent = fields.TEXT(sortable=True, analyzer=anaNgram, phrase=False)
+    rates_hotel = fields.NUMERIC(int, stored=True)
     airline_name = fields.TEXT(stored=True, sortable=True)
     status_promo = fields.NUMERIC(int, stored=True, sortable=True)
     # status_promo = fields.COLUMN(NumericColumn("i"))
@@ -81,6 +82,7 @@ with index.writer(limitmb=2048) as w:
         # print(row.get('idx'))
         print(row.get('packet_id'))
         promotags = content_promo_tags(row.get('promo_tags', None))
+        rates_hotels = sorted(row.get('rates_hotel'))[-1] if len(row.get('rates_hotel', [])) > 0 else None
         w.update_document(
             idx=unicode(row.get('idx')),
             price=row.get('price', 0),
@@ -100,6 +102,7 @@ with index.writer(limitmb=2048) as w:
             agent_slug=row.get('agent_slug'),
             content_agent=row.get('content_agent'),
             airline_name=row.get('airline_name'),
+            rates_hotel=rates_hotels,
             status_promo=int(row.get('status_promo', 0)) if row.get('status_promo', 0) is not None and isinstance(
                 row.get('status_promo', 0), int) else 0
         )

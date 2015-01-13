@@ -149,12 +149,12 @@ def render_empty_term(req):
         groupprice = []
         groupdisc = []
         groupdate = []
-        promo = req.db['umrah_promotions']
+        promo = req.db['promo_idx']
         results = promo.find({
-            'departure_date': {
+            'end_date': {
                 '$gte': datetime.now()
             },
-            'status': 1
+            'status_promo': 1
         }).sort('viewed', DESCENDING).limit(10)
         # print(datetime.now())
         # for row in results:
@@ -162,14 +162,15 @@ def render_empty_term(req):
         if results:
             for row in results:
                 grouppop.extend([row.get('promo_id', None)])
-                groupprice.extend([row.get('starting_price', 0)])
-                groupdisc.extend([row.get('discount', 0)])
-                groupdate.extend([row.get('departure_date', 0).isoformat()])
-                nameo = row.get('title', 'No title').split('-')[1]
+                groupprice.extend([row.get('price', 0)])
+                groupdisc.extend([row.get('disc_promo', 0)])
+                groupdate.extend([row.get('end_date', 0).isoformat()])
+                nameo = row.get('promo_name', 'No title').split('-')[1]
                 agent_slug = row.get('agent_slug', None)
                 airline_name = str(row.get('airline_name', '').split("/")[0]).replace(' ', '').lower()
+                rates_hotel = sorted(row.get('rates_hotel'))[-1]
                 feeder.append({
-                    "Name": row.get('title', 'No title'),
+                    "Name": row.get('promo_name', 'No title'),
                     "IsDefault": True,
                     "IsTitle": False,
                     "HasImage": False,
@@ -178,18 +179,19 @@ def render_empty_term(req):
                     "AgentId": None,
                     "agent_slug": agent_slug,
                     "airline_name": airline_name,
+                    "rates_hotel": rates_hotel,
                     "PacketId": row.get('promo_id', None),
                     "NoOfPromo": 1,
                     "GroupOfPromo": row.get('promo_id', None),
-                    "PromoText": str(row.get('title', 'No title')),
+                    "PromoText": str(row.get('promo_name', 'No title')),
                     "GroupOfPrice": 0,
-                    "startPrice": row.get('starting_price', 0),
+                    "startPrice": row.get('price', 0),
                     "endPrice": 0,
                     "GroupOfDisc": 0,
-                    "startDisc": row.get('discount', 0),
-                    "endDisc": row.get('discount', 0),
-                    "startDate": row.get('departure_date', 0).isoformat(),
-                    "endDate": row.get('departure_date', 0).isoformat(),
+                    "startDisc": row.get('disc_promo', 0),
+                    "endDisc": row.get('disc_promo', 0),
+                    "startDate": row.get('end_date', 0).isoformat(),
+                    "endDate": row.get('end_date', 0).isoformat(),
                     "ResultText": nameo,
                     "ResultAddress": nameo,
                     "Image": None,
@@ -278,6 +280,8 @@ def get_list_biro(s, results, req):
                     agent_slug = sorted([s.stored_fields(docnum)['agent_slug'] for docnum in doclist])
                     airline_name = str(sorted([s.stored_fields(docnum)['airline_name']
                                                for docnum in doclist])[0]).split("/")[0].replace(' ', '').lower()
+                    rates_hotel = sorted([s.stored_fields(docnum)['rates_hotel']
+                                          for docnum in doclist])[-1]
                     feeder.append({
                         "Name": nameo.upper(),
                         "IsDefault": False,
@@ -289,6 +293,7 @@ def get_list_biro(s, results, req):
                         "agent_city": agent_city[0],
                         "agent_slug": agent_slug[0],
                         "airline_name": airline_name,
+                        "rates_hotel": rates_hotel,
                         "PacketId": 0,
                         "NoOfPromo": len(doclist),
                         "GroupOfPromo": gpagent,
@@ -322,6 +327,7 @@ def get_list_biro(s, results, req):
             "agent_city": None,
             "agent_slug": None,
             "airline_name": None,
+            "rates_hotel": None,
             "PacketId": 0,
             "NoOfPromo": len(groupagent),
             "GroupOfPromo": groupagent,
@@ -384,6 +390,8 @@ def get_list_packet(s, results, req):
                     agent_slug = sorted([s.stored_fields(docnum)['agent_slug'] for docnum in doclist])
                     airline_name = str(sorted([s.stored_fields(docnum)['airline_name']
                                                for docnum in doclist])[0]).split("/")[0].replace(' ', '').lower()
+                    rates_hotel = sorted([s.stored_fields(docnum)['rates_hotel']
+                                          for docnum in doclist])[-1]
                     feeder.append({
                         "Name": nameo.upper(),
                         "IsDefault": False,
@@ -395,6 +403,7 @@ def get_list_packet(s, results, req):
                         "agent_city": agent_city[0],
                         "agent_slug": agent_slug[0],
                         "airline_name": airline_name,
+                        "rates_hotel": rates_hotel,
                         "PacketId": _objid,
                         "NoOfPromo": len(doclist),
                         "GroupOfPromo": gppackets,
@@ -428,6 +437,7 @@ def get_list_packet(s, results, req):
             "AgentId": 0,
             "agent_slug": None,
             "airline_name": None,
+            "rates_hotel": None,
             "PacketId": 0,
             "NoOfPromo": len(grouppacket),
             "GroupOfPromo": grouppacket,

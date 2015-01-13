@@ -148,6 +148,11 @@ for promo in promos.find():
     else:
         promo_tag = []
 
+    # set rate hotel mecca dan madinah
+    rates_hotel = []
+    rates_hotel.extend(promo.get('mecca_hotel_rates', []))
+    rates_hotel.extend(promo.get('medinah_hotel_rates', []))
+
     # chosen promo field
     mix_promo.update({'idx': promo.get('_id')}, {'$set': {
         'price': promo.get('starting_price', 0),
@@ -164,6 +169,8 @@ for promo in promos.find():
 
         'tpl_hotel_airline': tpl_hotel_airline,
 
+        'rates_hotel': rates_hotel,
+
         'content_packet': libPacket.get('content', ''),
         'agent_id': promo.get('agent_id', None),
         'agent_name': promo.get('agent_name', None),
@@ -171,7 +178,8 @@ for promo in promos.find():
         'agent_slug': promo.get('agent_slug', None),
         'content_agent': contentAgent.get('content', ''),
         'airline_name': promo.get('airline_name', None),
-        'status_promo': promo.get('status', 0)
+        'status_promo': promo.get('status', 0),
+        'viewed': promo.get('viewed', 0)
     }}, upsert=True)
 
     # print(time.time() - t)
