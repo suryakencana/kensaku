@@ -167,7 +167,7 @@ def render_empty_term(req):
                 groupdate.extend([row.get('departure_date', 0).isoformat()])
                 nameo = row.get('title', 'No title').split('-')[1]
                 agent_slug = row.get('agent_slug', None)
-                airline_name = slugify(row.get('airline_name', '').split("/")[0], to_lower=True)
+                airline_name = str(row.get('airline_name', '').split("/")[0]).replace(' ', '').lower()
                 feeder.append({
                     "Name": row.get('title', 'No title'),
                     "IsDefault": True,
@@ -276,8 +276,8 @@ def get_list_biro(s, results, req):
                 if i <= 10:
                     agent_city = sorted([s.stored_fields(docnum)['agent_city'] for docnum in doclist])
                     agent_slug = sorted([s.stored_fields(docnum)['agent_slug'] for docnum in doclist])
-                    airline_name = slugify(str(sorted([s.stored_fields(docnum)['airline_name']
-                                               for docnum in doclist])[0]).split("/")[0], to_lower=True)
+                    airline_name = str(sorted([s.stored_fields(docnum)['airline_name']
+                                               for docnum in doclist])[0]).split("/")[0].replace(' ', '').lower()
                     feeder.append({
                         "Name": nameo.upper(),
                         "IsDefault": False,
@@ -382,8 +382,8 @@ def get_list_packet(s, results, req):
                 if i <= 10:
                     agent_city = sorted([s.stored_fields(docnum)['agent_city'] for docnum in doclist])
                     agent_slug = sorted([s.stored_fields(docnum)['agent_slug'] for docnum in doclist])
-                    airline_name = slugify(str(sorted([s.stored_fields(docnum)['airline_name']
-                                               for docnum in doclist])[0]).split("/")[0], to_lower=True)
+                    airline_name = str(sorted([s.stored_fields(docnum)['airline_name']
+                                               for docnum in doclist])[0]).split("/")[0].replace(' ', '').lower()
                     feeder.append({
                         "Name": nameo.upper(),
                         "IsDefault": False,
