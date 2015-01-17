@@ -1,7 +1,9 @@
+from collections import defaultdict
 import json
 import logging
+from operator import is_not
 import os
-from datetime import datetime
+from datetime import datetime, timedelta
 from pymongo import DESCENDING
 
 from pyramid.response import Response
@@ -26,6 +28,11 @@ INDEXDIR = os.path.abspath("promo-tags-idx")
 # terms = request.params.get("q", '')
 # # return render_libraries(get_searcher(), terms, req=request)
 # return render_promo(get_searcher(), terms, req=request)
+
+
+class ListType:
+    PACKETS = 1
+    AGENTS = 2
 
 
 @view_config(route_name='promo', renderer='json')
@@ -155,51 +162,61 @@ def render_empty_term(req):
                 '$gte': datetime.now()
             },
             'status_promo': 1
-        }).sort('viewed', DESCENDING).limit(10)
+        }).sort('viewed', DESCENDING)
         # print(datetime.now())
         # for row in results:
         # print(row)
+        n = 0
         if results:
             for row in results:
-                grouppop.extend([row.get('promo_id', None)])
-                groupprice.extend([row.get('price', 0)])
-                groupdisc.extend([row.get('disc_promo', 0)])
-                groupdate.extend([row.get('end_date', 0).isoformat()])
-                nameo = row.get('promo_name', 'No title').split('-')[1]
-                agent_slug = row.get('agent_slug', None)
-                airline_name = str(row.get('airline_name', '').split("/")[0]).replace(' ', '').lower()
-                rates_hotel = sorted(row.get('rates_hotel'))[-1]
-                feeder.append({
-                    "Name": row.get('promo_name', 'No title'),
-                    "IsDefault": True,
-                    "IsTitle": False,
-                    "HasImage": False,
-                    "Header": None,
-                    "ObjectId": row.get('promo_id', None),
-                    "AgentId": None,
-                    "agent_slug": agent_slug,
-                    "airline_name": airline_name,
-                    "rates_hotel": rates_hotel,
-                    "PacketId": row.get('promo_id', None),
-                    "NoOfPromo": 1,
-                    "GroupOfPromo": row.get('promo_id', None),
-                    "PromoText": str(row.get('promo_name', 'No title')),
-                    "GroupOfPrice": 0,
-                    "startPrice": row.get('price', 0),
-                    "endPrice": 0,
-                    "GroupOfDisc": 0,
-                    "startDisc": row.get('disc_promo', 0),
-                    "endDisc": row.get('disc_promo', 0),
-                    "startDate": row.get('end_date', 0).isoformat(),
-                    "endDate": row.get('end_date', 0).isoformat(),
-                    "ResultText": nameo,
-                    "ResultAddress": nameo,
-                    "Image": None,
-                    "RetinaImage": None,
-                    "BgImageLoader": None,
-                    "tagging": "PAKET"
-                })
-
+                if n >= 10:
+                    break
+                # (end_date - (last_book + 1)) - now >= 0
+                allow_date = (row.get("end_date", datetime.now()) -
+                              timedelta(days=row.get('last_book', 0) + 1)) - datetime.now()
+                if allow_date.days >= 0:
+                    n += 1
+                    grouppop.extend([row.get('promo_id', None)])
+                    groupprice.extend([row.get('price', 0)])
+                    groupdisc.extend([row.get('disc_promo', 0)])
+                    groupdate.extend([row.get('end_date', 0).isoformat()])
+                    nameo = row.get('packet_name', 'No title')
+                    agent_slug = row.get('agent_slug', None)
+                    airline_name = str(row.get('airline_name', '').split("/")[0]).replace(' ', '').lower()
+                    rates_hotel = sorted(row.get('rates_hotel'))[-1]
+                    feeder.append({
+                        "Name": row.get('promo_name', 'No title'),
+                        "IsDefault": True,
+                        "IsTitle": False,
+                        "HasImage": False,
+                        "Header": None,
+                        "ObjectId": row.get('promo_id', None),
+                        "AgentId": None,
+                        "agent_slug": agent_slug,
+                        "airline_name": airline_name,
+                        "rates_hotel": rates_hotel,
+                        "PacketId": row.get('promo_id', None),
+                        "NoOfPromo": 1,
+                        "GroupOfPromo": row.get('promo_id', None),
+                        "PromoText": str(row.get('promo_name', 'No title')),
+                        "GroupOfPrice": 0,
+                        "startPrice": row.get('price', 0),
+                        "endPrice": 0,
+                        "GroupOfDisc": 0,
+                        "startDisc": row.get('disc_promo', 0),
+                        "endDisc": row.get('disc_promo', 0),
+                        "startDate": row.get('end_date', 0).isoformat(),
+                        "endDate": row.get('end_date', 0).isoformat(),
+                        "ResultText": nameo,
+                        "ResultAddress": nameo,
+                        "Image": None,
+                        "RetinaImage": None,
+                        "BgImageLoader": None,
+                        "tagging": "PAKET"
+                    })
+            groupprice = sorted(groupprice)
+            groupdate = sorted(groupdate)
+            groupdisc = sorted(groupdisc)
             feed.append({
                 "Name": None,
                 "IsDefault": True,
@@ -243,6 +260,150 @@ def get_searcher():
     try:
         return index.open_dir(INDEXDIR)
     except (KeyError, ValueError) as e:
+        log.error(e.message)
+
+
+def is_get(obj, default=None):
+    if obj:
+        return obj
+    return default
+
+
+def get_list_json(s, glist, ltype):
+    """Fungsi list promo umroh berdasarkan biro"""
+    try:
+        feed = []
+        feeder = []
+        grouppromo = []
+        groupprice = []
+        groupdate = []
+        groupdisc = []
+        # print(len(agents))
+        if ltype == ListType.PACKETS:
+            name = 'packet_name'
+            tagging = 'PACKETS'
+            header = 'Paket Umroh'
+            allpick = 'Semua Paket Umroh'
+        if ltype == ListType.AGENTS:
+            name = 'agent_name'
+            tagging = 'AGENT'
+            header = 'Travel Umroh'
+            allpick = 'Semua Biro Umroh'
+
+        for i, docid in enumerate(glist):
+            doclist = glist[docid]
+            # group_id : packet_id || agent_id
+            nameo = s.stored_fields(doclist[0])[name]
+            groupdoc = defaultdict(list)
+            for docnum in doclist:
+                allow_date = (s.stored_fields(docnum)['end_date'] -
+                              timedelta(days=s.stored_fields(docnum)['last_book'] + 1)) - datetime.now()
+                if allow_date.days >= 0:
+                    # group promo per group
+                    groupdoc["gpromo"].append(s.stored_fields(docnum)['promo_id'])
+                    # group price per promo untuk mencari range paling murah
+                    groupdoc["gprice"].append(s.stored_fields(docnum)['price'])
+                    # group departure date per promo untuk mencari range tanggal keberangkatan paling awal
+                    groupdoc["gdate"].append(s.stored_fields(docnum)['end_date'])
+                    # group disc promo
+                    groupdoc["gdisc"].append(s.stored_fields(docnum)['disc_promo'])
+                    # group agent_city
+                    groupdoc["gagcity"].append(s.stored_fields(docnum)['agent_city'])
+                    # group agent_slug
+                    groupdoc["gagslug"].append(s.stored_fields(docnum)['agent_slug'])
+                    # group airline_name
+                    groupdoc["gairname"].append(s.stored_fields(docnum)['airline_name'])
+                    # group rate_hotel
+                    groupdoc["gratehotel"].append(s.stored_fields(docnum)['rates_hotel'])
+            groupdoc["gpromo"] = filter(None, sorted(groupdoc["gpromo"]))
+            groupdoc["gprice"] = filter(None, sorted(groupdoc["gprice"]))
+            groupdoc["gdate"] = filter(None, sorted(groupdoc["gdate"]))
+            groupdoc["gdisc"] = filter(None, sorted(groupdoc["gdisc"]))
+            groupdoc["gagcity"] = filter(None, sorted(groupdoc["gagcity"]))
+            groupdoc["gairname"] = filter(None, sorted(groupdoc["gairname"]))
+            groupdoc["gratehotel"] = filter(None, sorted(groupdoc["gratehotel"]))
+            # print(groupdoc["gagcity"])
+            print(groupdoc["gratehotel"])
+            # tampilkan data rank 10
+            if i <= 10:
+                feeder.append({
+                    "Name": nameo.upper(),
+                    "IsDefault": False,
+                    "IsTitle": False,
+                    "HasImage": False,
+                    "Header": None,
+                    "ObjectId": docid,
+                    "AgentId": docid,
+                    "agent_city": groupdoc["gagcity"][0] if len(groupdoc["gagcity"]) > 0 else 'Kota _',
+                    "agent_slug": groupdoc["gagslug"][0] if len(groupdoc["gagslug"]) > 0 else 'agent_kosong',
+                    "airline_name": groupdoc["gairname"][0].split("/")[0].replace(' ', '').lower() if len(groupdoc["gairname"]) > 0 else 'airline_empty',
+                    "rates_hotel": groupdoc["gratehotel"][-1] if len(groupdoc["gratehotel"]) > 0 else 0,
+                    "PacketId": 0,
+                    "NoOfPromo": len(groupdoc["gpromo"]),
+                    "GroupOfPromo": groupdoc["gpromo"],
+                    "PromoText": nameo,
+                    "GroupOfPrice": groupdoc["gprice"],
+                    "startPrice": groupdoc["gprice"][0] if len(groupdoc["gprice"]) > 0 else 0,
+                    "endPrice": groupdoc["gprice"][-1] if len(groupdoc["gprice"]) > 0 else 0,
+                    "GroupOfDisc": groupdoc["gdisc"],
+                    "startDisc": groupdoc["gdisc"][0] if len(groupdoc["gdisc"]) > 0 else 0,
+                    "endDisc": groupdoc["gdisc"][-1] if len(groupdoc["gdisc"]) > 0 else 0,
+                    "startDate": groupdoc["gdate"][0].isoformat() if len(groupdoc["gdate"]) > 0 else datetime.now().isoformat(),
+                    "endDate": groupdoc["gdate"][-1].isoformat() if len(groupdoc["gdate"]) > 0 else datetime.now().isoformat(),
+                    "ResultText": nameo,
+                    "ResultAddress": nameo,
+                    "Image": None,
+                    "RetinaImage": None,
+                    "BgImageLoader": None,
+                    "tagging": tagging
+                })
+
+            """group list untuk params header"""
+            grouppromo.extend(groupdoc["gpromo"])
+            groupprice.extend(groupdoc["gprice"])
+            groupdate.extend(groupdoc["gdate"])
+            groupdisc.extend(groupdoc["gdisc"])
+
+        """kategori agent group promo """
+        grouppromo = sorted(grouppromo)
+        groupprice = sorted(groupprice)
+        groupdate = sorted(groupdate)
+        groupdisc = sorted(groupdisc)
+        feed.append({
+            "Name": None,
+            "IsDefault": False,
+            "IsTitle": True,
+            "HasImage": False,
+            "Header": header,
+            "ObjectId": 0,
+            "AgentId": 0,
+            "agent_city": None,
+            "agent_slug": None,
+            "airline_name": None,
+            "rates_hotel": 0,
+            "PacketId": 0,
+            "NoOfPromo": len(grouppromo),
+            "GroupOfPromo": grouppromo,
+            "PromoText": None,
+            "GroupOfPrice": groupprice,
+            "startPrice": groupprice[0] if len(groupprice) > 0 else 0,
+            "endPrice": groupprice[-1] if len(groupprice) > 0 else 0,
+            "GroupOfDisc": groupdisc,
+            "startDisc": groupdisc[0] if len(groupdisc) > 0 else 0,
+            "endDisc": groupdisc[-1] if len(groupdisc) > 0 else 0,
+            "startDate": groupdate[0].isoformat() if len(groupdate) > 0 else 0,
+            "endDate": groupdate[-1].isoformat() if len(groupdate) > 0 else 0,
+            "ResultText": allpick,
+            "ResultAddress": allpick,
+            "Image": None,
+            "RetinaImage": None,
+            "BgImageLoader": None,
+            "tagging": None
+        })
+        feed.extend(feeder)
+        return feed
+    except (KeyError, ValueError) as e:
+        s._field_caches.clear()
         log.error(e.message)
 
 
@@ -316,6 +477,9 @@ def get_list_biro(s, results, req):
         else:
             print('break else')
         """ kategori agent group promo """
+        groupprice = sorted(groupprice)
+        groupdate = sorted(groupdate)
+        groupdisc = sorted(groupdisc)
         feed.append({
             "Name": None,
             "IsDefault": False,
@@ -427,6 +591,8 @@ def get_list_packet(s, results, req):
             print('break else')
         """kategori packet group promo"""
         groupprice = sorted(groupprice)
+        groupdate = sorted(groupdate)
+        groupdisc = sorted(groupdisc)
         feed.append({
             "Name": None,
             "IsDefault": False,
@@ -469,6 +635,7 @@ def render_promo_by(ix, terms, req):
     with ix.searcher(weighting=TF_IDF()) as s:
         qp = qparser.MultifieldParser(["promo_tags",
                                        "content_packet",
+                                       "content_agent",
                                        "promo_name",
                                        "tpl_hotel_airline"], s.schema)
         try:
@@ -479,8 +646,13 @@ def render_promo_by(ix, terms, req):
             results = s.search_page(q, 1, 10, filter=sts, mask=oldDate,
                                     sortedby=scores, groupedby=["packet_id", "agent_id"])
             feed = []
-            feed.extend(get_list_packet(s, results, req))
-            feed.extend(get_list_biro(s, results, req))
+            # feed.extend(get_list_packet(s, results, req))
+            # feed.extend(get_list_biro(s, results, req))
+
+            paket = results.results.groups('packet_id')
+            feed.extend(get_list_json(s, paket, ListType.PACKETS))
+            biro = results.results.groups('agent_id')
+            feed.extend(get_list_json(s, biro, ListType.AGENTS))
         except (KeyError, ValueError) as e:
             qp = None
             feed = None
@@ -518,6 +690,7 @@ def render_promo_beta(ix, terms, req):
         # qp = qparser.QueryParser("content_packet", s.schema)
         qp = qparser.MultifieldParser(["promo_tags",
                                        "content_packet",
+                                       "content_agents",
                                        "promo_name",
                                        "tpl_hotel_airline"], s.schema)
 
@@ -538,8 +711,13 @@ def render_promo_beta(ix, terms, req):
             print("Hasil All result")
             # print("=================================================================")
             feed = []
-            feed.extend(get_list_packet_beta(s, results, req))
-            feed.extend(get_list_biro_beta(s, results, req))
+            # feed.extend(get_list_packet_beta(s, results, req))
+            # feed.extend(get_list_biro_beta(s, results, req))
+            paket = results.results.groups("packet_id")
+            biro = results.results.groups("agent_id")
+            feed.extend(get_list_json(s, paket, ListType.PACKETS))
+            feed.extend(get_list_json(s, biro, ListType.AGENTS))
+
 
             # feeder = []
             # groupagent = []
@@ -549,8 +727,8 @@ def render_promo_beta(ix, terms, req):
             # for i, agent in enumerate(agents):
             # if i > 10:
             # break
-            #     doclist = agents[agent]
-            #     # agent
+            # doclist = agents[agent]
+            # # agent
             #     print(agent)
             #     paket = req.db['libraries']
             #     pp = paket.find_one({'tag': 'AGENT', 'reference_id': agent})
@@ -751,8 +929,8 @@ def get_list_biro_beta(s, results, req):
                 # print("By Agent {1}  Promo Total: {0}".format(pp['name'], len(doclist), pp['name']))
 
                 # for docnum in doclist:
-                #     print(s.stored_fields(docnum))
-                #     # for docnum, score in doclist[:5]:
+                # print(s.stored_fields(docnum))
+                # # for docnum, score in doclist[:5]:
                 nameo = unicode(pp.get('name', 'Nama Agen')).capitalize()
                 # group promo per agent
                 gpagent = [s.stored_fields(docnum)['promo_id'] for docnum in doclist]
@@ -871,7 +1049,7 @@ def get_list_packet_beta(s, results, req):
                 # print("Packet Promo Total: {0}".format(len(doclist)))
                 # for docnum in doclist:
                 # print(s.stored_fields(docnum)['promo_name'])
-                #     # for docnum, score in doclist[:5]:
+                # # for docnum, score in doclist[:5]:
                 nameo = unicode(pp['packet_name']).capitalize()
                 _objid = pp.get('packet_id', 0)
                 """List untuk group fields params"""

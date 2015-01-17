@@ -53,7 +53,7 @@ class PromoIdxSchema(fields.SchemaClass):
     rates_hotel = fields.NUMERIC(int, stored=True)
     airline_name = fields.TEXT(stored=True, sortable=True)
     status_promo = fields.NUMERIC(int, stored=True, sortable=True)
-    # status_promo = fields.COLUMN(NumericColumn("i"))
+    last_book = fields.NUMERIC(int, stored=True, sortable=True)
 
 
 def content_promo_tags(multi_tag):
@@ -104,7 +104,9 @@ with index.writer(limitmb=2048) as w:
             airline_name=row.get('airline_name'),
             rates_hotel=rates_hotels,
             status_promo=int(row.get('status_promo', 0)) if row.get('status_promo', 0) is not None and isinstance(
-                row.get('status_promo', 0), int) else 0
+                row.get('status_promo', 0), int) else 0,
+            last_book=int(row.get('last_book', 0)) if row.get('last_book', 0) is not None and isinstance(
+                row.get('last_book', 0), int) else 0
         )
         print(time.time() - t)
 print(time.time() - t)

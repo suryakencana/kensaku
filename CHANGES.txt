@@ -8,3 +8,32 @@
 - [MNR]:range price untuk combobox
 - [MNR]:total promo per group
 - [MJR]:tambah field template hotel dan maskapai
+- [MJR]:keterangan RangeDate mulai keberangkatan - akhir keberangkatan
+
+- Initial version @1.0.0
+- [MJR]:range price untuk combobox
+- [MJR]:total promo per group
+- [MJR]:indexing template fasilitas hotel dan maskapai deskripsi
+- [MNR]:slicing multi-tagging promo
+- [MNR]:mulai dari: harga terendah
+- [MNR]:fungsi recursif tiap kata capitalize fn:split char(spasi) per list capitalize join list
+- [MNR]:Nama paket di halaman hasil pencarian
+- [MJR]:Hightlight text keyword di result text
+- [MNR]:reordering tampilkan paket umrah baru agent
+- [MJR]:jumlah 0 disabled tombol tampilkan
+- [MNR]:fungsi event mousedown autosuggestion show up
+- [MNR]:slicing kode promo di tampilan paket populer
+- [MNR]:discount index type int
+- [MNR]:tampilkan data agent_city
+- [MNR]:tampilkan jumlah all data pencarian diheader
+- [MNR]:tampilkan logo biro, maskapai dan rates hotel
+- [MNR]:hilang kan tampilan keterangan range tanggal
+- [MNR]:keyword pencarian ditampilkan bersama resultText
+- [MNR]:untuk nama biro di upper case dan untuk nama Promo Caps word
+
+- [BUG]: Header Agents rubah Travel Umroh dan Packet rubah Paket Promo
+- [BUG]:pilih promo dengan jumlah 1 muncul harga terendah yg tidak muncul coz "kurang operator len(price) >= 1"
+- [BUG]:saat pilih range awal dan akhir keberangkatan, biaya umroh harus dipilih | pilih semua coz ".any? => .blank?"
+- [BUG]:saat biaya umroh distate -all- hasil promo tidak muncul :code disisi rails coz ".any? => .blank?"
+
+- Intial version @ 1.0.x

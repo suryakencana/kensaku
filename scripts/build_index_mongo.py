@@ -113,6 +113,8 @@ for promo in promos.find():
         if air_id is not None:
             maskapai_kontent.extend(template_maskapai(air_id, my_conn))
             print(time.time())
+        # cari last_allowed_book
+        last_book = umrah.get('last_allowed_book', 0)
 
     # print(''.join(maskapai_kontent))
     hotel_content.extend(maskapai_kontent)
@@ -179,7 +181,8 @@ for promo in promos.find():
         'content_agent': contentAgent.get('content', ''),
         'airline_name': promo.get('airline_name', None),
         'status_promo': promo.get('status', 0),
-        'viewed': promo.get('viewed', 0)
+        'viewed': promo.get('viewed', 0),
+        'last_book': last_book
     }}, upsert=True)
 
     # print(time.time() - t)

@@ -35,7 +35,7 @@ def main(global_config, **settings):
     # set inspeksi data
     config.add_route('results_build', '/api/beta/result')
     config.add_route('valid_build', '/api/beta/valid')
-    config.add_route('kensaku_build', '/ken-beta')
+    config.add_route('kensaku_build', '/kensaku-beta')
 
     config.scan()
     return config.make_wsgi_app()

@@ -18,7 +18,10 @@
 """
 from collections import defaultdict
 import json
-from pymongo import MongoClient
+
+import bson
+from datetime import datetime, timedelta
+from pymongo import MongoClient, DESCENDING
 import time
 import re
 
@@ -35,11 +38,11 @@ idx = db.promo_idx
 # print(lib.find({"_id": 4}))
 t = time.time()
 # row = idx.find_one({'idx': 5138})
-rows = idx.find()
+# rows = idx.find()
 # jsobj = ",".join(list(row.get("included_facility_airline", None)))
-tagdict = defaultdict(list)
-angkaHuruf = lambda f: ' '.join(re.findall('[^\W\d_]+|\d+', f))
-Besarkecil = lambda f: ' '.join(re.findall('[A-Z][^A-Z]*', f))
+# tagdict = defaultdict(list)
+# angkaHuruf = lambda f: ' '.join(re.findall('[^\W\d_]+|\d+', f))
+# Besarkecil = lambda f: ' '.join(re.findall('[A-Z][^A-Z]*', f))
 
 # for obj in list(row.get('promo_tags', [])):
 #     k, v = obj.split(':')
@@ -104,26 +107,58 @@ Besarkecil = lambda f: ' '.join(re.findall('[A-Z][^A-Z]*', f))
 #     print(['{k} {val}'.format(k=key, val=str(v).lower()) for v in value])
 #     # print('{k} {val}'.format(k=key, val=', '.join(value)))
 
-for row in rows:
-    stray = []
-    multi_tag = row.get('promo_tags', None)
-    print(row.get('idx'))
-    # if '' in multi_tag and multi_tag is not None:
-    # print(filter_tag(multi_tag))
-    for key, value in dict(multi_tag).iteritems():
-        for v in value:
-            stray.append(key)
-            stray.append(v)
-        # stray.append(key)
-    print(' '.join(stray).lower())
+# for row in rows:
+#     stray = []
+#     multi_tag = row.get('promo_tags', None)
+#     print(row.get('idx'))
+#     # if '' in multi_tag and multi_tag is not None:
+#     # print(filter_tag(multi_tag))
+#     for key, value in dict(multi_tag).iteritems():
+#         for v in value:
+#             stray.append(key)
+#             stray.append(v)
+#         # stray.append(key)
+#     print(' '.join(stray).lower())
 
 #
 # stray.append(' '.join(['{k} {val}'.format(k=str(key).encode(encoding='utf-8'),
 #                                            val=str(v).encode(encoding='utf-8').lower()) for v in
 #                         value]))
+# db.things.map_reduce(mapper, reducer, "myresults")
+# mapper = bson.Code("""
+#                function () {
+#
+#                    emit(this.promo_name, 1);
+#
+#                }
+#                """)
+# reducer = bson.Code("""
+#                 function (key, values) {
+#                   var total = 0;
+#                   for (var i = 0; i < values.length; i++) {
+#                     total += values[i];
+#                   }
+#                   return total;
+#                 }
+#                 """)
+#
+# res = idx.map_reduce(mapper, reducer, "myresults")
+# for r in res.find():
+#     print(r)
 
-"""
-
-
-
-"""
+results = idx.find({
+    'end_date': {
+        '$gte': datetime.now()
+    },
+    'status_promo': 1
+}).sort('viewed', DESCENDING)
+n = 0
+for i, row in enumerate(results):
+    if n >= 10:
+        break
+    # (end_date - (last_book + 1)) - now >= 0
+    allow_date = (row.get("end_date", datetime.now()) -
+                  timedelta(days=row.get('last_book', 0)+1)) - datetime.now()
+    if allow_date.days >= 0:
+        n += 1
+        print("{3} | {2} : {0} - {1}".format(row.get("viewed"), row.get("promo_name"), allow_date, i))
