@@ -107,6 +107,7 @@ for promo in promos.find():
 
     maskapai_kontent = []
     umrah = db.umrahs.find_one({'_id': promo.get('umrah_id')})
+    last_book = 0
     if umrah is not None:
         # cari id airline_id
         air_id = umrah.get('airline_id')
@@ -114,7 +115,7 @@ for promo in promos.find():
             maskapai_kontent.extend(template_maskapai(air_id, my_conn))
             print(time.time())
         # cari last_allowed_book
-    last_book = umrah.get('last_allowed_book', 0)
+        last_book = umrah.get('last_allowed_book', 0)
 
     # print(''.join(maskapai_kontent))
     hotel_content.extend(maskapai_kontent)
