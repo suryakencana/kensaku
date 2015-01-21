@@ -1,19 +1,17 @@
 from collections import defaultdict
 import json
 import logging
-from operator import is_not
 import os
 from datetime import datetime, timedelta
-from pymongo import DESCENDING
 
+from pymongo import DESCENDING
 from pyramid.response import Response
 from pyramid.view import view_config
-from slugify import slugify
 from whoosh import index, qparser
 from whoosh import highlight
 from whoosh.query.ranges import NumericRange, DateRange
 from whoosh.scoring import TF_IDF
-from whoosh.sorting import Best, FieldFacet, ScoreFacet
+from whoosh.sorting import ScoreFacet
 
 
 log = logging.getLogger(__name__)
@@ -282,18 +280,17 @@ def render_promo_by(ix, terms, req):
             sts = NumericRange("status_promo", 1, 1)
             oldDate = DateRange("end_date", None, datetime.now())
             scores = ScoreFacet()
-            results = s.search_page(q, 1, 10, filter=sts, mask=oldDate,
-                                    sortedby=scores, groupedby=["packet_id", "agent_id"])
+            results = s.search(q, filter=sts, mask=oldDate,
+                               sortedby=scores, groupedby=["packet_id", "agent_id"])
             feed = []
             # feed.extend(get_list_packet(s, results, req))
             # feed.extend(get_list_biro(s, results, req))
 
-            paket = results.results.groups('packet_id')
+            paket = results.groups('packet_id')
             feed.extend(get_list_json(s, paket, ListType.PACKETS))
-            biro = results.results.groups('agent_id')
+            biro = results.groups('agent_id')
             feed.extend(get_list_json(s, biro, ListType.AGENTS))
         except (KeyError, ValueError) as e:
-            qp = None
             feed = None
             s._field_caches.clear()
             log.error(e.message)
