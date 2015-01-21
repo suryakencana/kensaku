@@ -19,6 +19,8 @@ shell> pip install mysql-connector-python
   Some externally hosted files were ignored
     (use --allow-external mysql-connector-python to allow).
 
+- mongorestore --dbpath /srv/mongodb
+- mongorestore --host mongodb1.example.net --port 37017 --username user --password pass /opt/backup/mongodump-2011-10-24
 
 dibangun diatas python 2.7
 cli:

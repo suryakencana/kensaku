@@ -20,6 +20,7 @@ import os
 import time
 
 from pymongo import MongoClient
+import slugify
 from whoosh import fields, analysis
 from whoosh.index import create_in
 from whoosh.lang.stopwords import stoplists
@@ -43,6 +44,7 @@ class PromoIdxSchema(fields.SchemaClass):
     promo_tags = fields.TEXT(sortable=True)
     packet_id = fields.NUMERIC(int, stored=True, sortable=True)
     packet_name = fields.TEXT(stored=True, sortable=True)
+    packet_slug = fields.TEXT(stored=True, sortable=True)
     tpl_hotel_airline = fields.TEXT(sortable=True, analyzer=ana)
     content_packet = fields.TEXT(sortable=True, spelling=True, analyzer=anaNgram, phrase=False)
     agent_id = fields.NUMERIC(int, stored=True, sortable=True)
@@ -90,10 +92,11 @@ with index.writer(limitmb=2048) as w:
             end_date=row.get('end_date'),
             promo_id=row.get('promo_id'),
             disc_promo=row.get('disc_promo'),
-            promo_name=row.get('promo_name'), promo_ngramword=row.get('promo_name'),
+            promo_name=row.get('promo_name', ''), promo_ngramword=row.get('promo_name'),
             promo_tags=unicode(promotags),
             packet_id=int(row.get('packet_id')),
             packet_name=row.get('packet_name'),
+            packet_slug=slugify.slugify(row.get('packet_name', ''), to_lower=True),
             tpl_hotel_airline=row.get('tpl_hotel_airline'),
             content_packet=row.get('content_packet'),
             agent_id=row.get('agent_id'),
