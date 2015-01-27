@@ -43,3 +43,26 @@ build index di mongo
 
 buat index untuk whoosh lib
 - python scripts/index_promo_idx.py
+
+var Key = {
+        _pressed: {},
+        LEFT: 37,
+        UP: 38,
+        RIGHT: 39,
+        DOWN: 40,
+
+        isDown: function (keyCode) {
+            return this._pressed[keyCode];
+        },
+
+        onKeydown: function (event) {
+            this._pressed[event.keyCode] = true;
+
+            if (Key.isDown(Key.UP))
+                //do up action
+            else if (Key.isDown(Key.DOWN)) {
+                //do down action
+            }
+            delete this._pressed[event.keyCode];
+        }
+    };

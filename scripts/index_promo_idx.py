@@ -21,6 +21,7 @@ import time
 
 from pymongo import MongoClient
 import slugify
+
 from whoosh import fields, analysis
 from whoosh.index import create_in
 from whoosh.lang.stopwords import stoplists
@@ -76,44 +77,44 @@ index = create_in(INDEXDIR, PromoIdxSchema)
 conn = MongoClient('localhost', 27017)
 db = conn["ikhram"]
 pro_idx = db.promo_idx
-
-# Fill index with {index-mongo} from MongoDB
-t = time.time()
-with index.writer(limitmb=2048) as w:
-    for row in pro_idx.find():
-        # print(row.get('idx'))
-        print(row.get('packet_id'))
-        promotags = content_promo_tags(row.get('promo_tags', None))
-        rates_hotels = sorted(row.get('rates_hotel'))[-1] if len(row.get('rates_hotel', [])) > 0 else None
-        w.update_document(
-            idx=unicode(row.get('idx')),
-            price=row.get('price', 0),
-            start_date=row.get('start_date'),
-            end_date=row.get('end_date'),
-            promo_id=row.get('promo_id'),
-            disc_promo=row.get('disc_promo'),
-            promo_name=row.get('promo_name', ''), promo_ngramword=row.get('promo_name'),
-            promo_tags=unicode(promotags),
-            packet_id=int(row.get('packet_id')),
-            packet_name=row.get('packet_name'),
-            packet_slug=slugify.slugify(row.get('packet_name', ''), to_lower=True),
-            tpl_hotel_airline=row.get('tpl_hotel_airline'),
-            content_packet=row.get('content_packet'),
-            agent_id=row.get('agent_id'),
-            agent_name=row.get('agent_name'),
-            agent_city=row.get('agent_city'),
-            agent_slug=row.get('agent_slug'),
-            content_agent=row.get('content_agent'),
-            airline_name=row.get('airline_name'),
-            rates_hotel=rates_hotels,
-            status_promo=int(row.get('status_promo', 0)) if row.get('status_promo', 0) is not None and isinstance(
-                row.get('status_promo', 0), int) else 0,
-            last_book=int(row.get('last_book', 0)) if row.get('last_book', 0) is not None and isinstance(
-                row.get('last_book', 0), int) else 0
-        )
-        print(time.time() - t)
-print(time.time() - t)
-
-
+try:
+    # Fill index with {index-mongo} from MongoDB
+    t = time.time()
+    with index.writer(limitmb=1024) as w:
+        for row in pro_idx.find():
+            # print(row.get('idx'))
+            print(row.get('packet_id'))
+            promotags = content_promo_tags(row.get('promo_tags', None))
+            rates_hotels = sorted(row.get('rates_hotel'))[-1] if len(row.get('rates_hotel', [])) > 0 else None
+            w.update_document(
+                idx=unicode(row.get('idx')),
+                price=row.get('price', 0),
+                start_date=row.get('start_date'),
+                end_date=row.get('end_date'),
+                promo_id=row.get('promo_id'),
+                disc_promo=row.get('disc_promo'),
+                promo_name=row.get('promo_name', ''), promo_ngramword=row.get('promo_name'),
+                promo_tags=unicode(promotags),
+                packet_id=int(row.get('packet_id')),
+                packet_name=row.get('packet_name', ''),
+                packet_slug=row.get('packet_slug'),
+                tpl_hotel_airline=row.get('tpl_hotel_airline'),
+                content_packet=row.get('content_packet'),
+                agent_id=row.get('agent_id'),
+                agent_name=row.get('agent_name'),
+                agent_city=row.get('agent_city'),
+                agent_slug=row.get('agent_slug'),
+                content_agent=row.get('content_agent'),
+                airline_name=row.get('airline_name'),
+                rates_hotel=rates_hotels,
+                status_promo=int(row.get('status_promo', 0)) if row.get('status_promo', 0) is not None and isinstance(
+                    row.get('status_promo', 0), int) else 0,
+                last_book=int(row.get('last_book', 0)) if row.get('last_book', 0) is not None and isinstance(
+                    row.get('last_book', 0), int) else 0
+            )
+            print(time.time() - t)
+    print(time.time() - t)
+except(KeyError, ValueError) as e:
+    print(e)
 
  # promo_tags=','.join(row.get('promo_tags')) if len(row.get('promo_tags', [])) > 0 else u'',

@@ -30,6 +30,9 @@ INDEXDIR = os.path.abspath("promo-tags-idx")
 
 
 class ListType:
+    def __init__(self):
+        pass
+
     PACKETS = 1
     AGENTS = 2
 
@@ -49,6 +52,68 @@ def umrahPromo(request):
     id = request.matchdict['id']
     return Response(
         body=json.dumps({'message': '{0} Custom `Not Found` message'.format(id)}),
+        status='201 Created',
+        charset='UTF-8',
+        content_type='application/json;')
+
+
+@view_config(route_name='testrails', renderer='json')
+def test_rail(request):
+    # type : match
+    tipe = request.params.get('type')
+    match = request.params.get('match')
+    q = request.params.get('q')
+    ix = get_searcher()
+    with ix.searcher(weighting=TF_IDF()) as s:
+        qp = qparser.MultifieldParser(["promo_tags",
+                                       "content_packet",
+                                       "content_agent",
+                                       "promo_name",
+                                       "tpl_hotel_airline"], s.schema)
+        try:
+            # api evolution
+            linq = [q, "AND (" if not '' in tipe else None,
+                    "agent_slug:{match}".format(match=match) if "agent" in tipe else None,
+                    "packet_slug:{match}".format(match=match) if "packet" in tipe else None,
+                    ")" if not '' in tipe else None]
+            # /api/v1/test_rails?q=patuna&type=packet&match=paket-biru-by-qatar-via-jeddah
+            # list join
+            print(linq)
+            terms = unicode(" ".join(filter(None, linq)))
+            print(terms)
+            q = qp.parse(terms)
+            print(q)
+            sts = NumericRange("status_promo", 1, 1)
+            oldDate = DateRange("end_date", None, datetime.now())
+            scores = ScoreFacet()
+            results = s.search(q, limit=None, filter=sts, mask=oldDate,
+                               sortedby=scores, groupedby=["packet_id", "agent_id"])
+            feed = []
+            # feed.extend(get_list_packet(s, results, req))
+            # feed.extend(get_list_biro(s, results, req))
+            print(len(results))
+            for hit in results:
+                feeder = []
+                allow_date = (hit['end_date'] -
+                              timedelta(days=hit['last_book'] + 1)) - datetime.now()
+                # print("{0}, {1}".format(allow_date.days))
+                if allow_date.days >= 0:
+                    # if hit.rank < 10:
+                    data = {
+                        "promo_id": hit['promo_id'],
+                        "promo_name": hit['packet_name'],
+                        "packet_slug": hit['packet_slug'],
+                        "promo_tags": hit['promo_tags'],
+                        "end_date": hit['end_date'].isoformat()
+                    }
+                    feeder.append(data)
+                    feed.extend(feeder)
+            print(len(feed))
+        except (KeyError, ValueError) as e:
+            feed = None
+            log.error(e)
+    return Response(
+        body=json.dumps(feed),
         status='201 Created',
         charset='UTF-8',
         content_type='application/json;')
@@ -127,6 +192,28 @@ def valid_button(request):
             content_type='application/json;')
 
 
+@view_config(route_name='rest', renderer='json')
+def rest(request):
+    tipe = request.params.get('type', '')
+    match = request.params.get('match', '')
+    terms = request.params.get("q", '')
+    linq = get_linq(terms, tipe, match)
+
+    def deep(data):
+        feed = []
+        for hit in data:
+            feed.append(hit['promo_id'])
+        return feed
+
+    res = get_search(get_searcher(), linq, deep)
+
+    return Response(
+        body=json.dumps(res),
+        status='201 Created',
+        charset='UTF-8',
+        content_type='application/json;')
+
+
 @view_config(route_name='home', renderer='templates/whoosh/search.mako')
 def search(request):
     return {'args': request.params}
@@ -135,12 +222,18 @@ def search(request):
 @view_config(route_name='results', renderer='json')
 def results(request):
     try:
-        terms = request.params.get("q", '')
+        tipe = request.params.get('type')
+        match = request.params.get('match')
+        terms = request.params.get('q')
         if len(terms) <= 0:
             print('log terms kosong')
             # default term kosong
             return render_empty_term(req=request)
-        return render_promo_by(get_searcher(), terms, req=request)
+        # api evolution
+        linq = get_linq(terms, tipe, match)
+        # /api/v1/test_rails?q=patuna&type=packet&match=paket-biru-by-qatar-via-jeddah
+        # list join
+        return render_promo_by(get_searcher(), linq, req=request)
     except(KeyError, ValueError) as e:
         log.error(e.message)
 
@@ -209,6 +302,8 @@ def render_empty_term(req):
                         "Image": None,
                         "RetinaImage": None,
                         "BgImageLoader": None,
+                        "type": 'packet',
+                        "match": row.get('packet_slug', ''),
                         "tagging": "PAKET"
                     })
             groupprice = sorted(groupprice)
@@ -241,6 +336,8 @@ def render_empty_term(req):
                 "Image": None,
                 "RetinaImage": None,
                 "BgImageLoader": None,
+                "type": None,
+                "match": None,
                 "tagging": None
             })
             feed.extend(feeder)
@@ -260,10 +357,32 @@ def get_searcher():
         log.error(e.message)
 
 
-def is_get(obj, default=None):
-    if obj:
-        return obj
-    return default
+def get_linq(terms, tipe, match):
+    return unicode(" ".join(
+        filter(None, [terms, "AND (" if not '' in tipe else None,
+                      "agent_slug:{match}".format(match=match) if "agent" in tipe else None,
+                      "packet_slug:{match}".format(match=match) if "packet" in tipe else None,
+                      ")" if not '' in tipe else None])))
+
+
+def get_search(ix, terms, callback):
+    with ix.searcher(weighting=TF_IDF()) as s:
+        qp = qparser.MultifieldParser(["promo_tags",
+                                       "content_packet",
+                                       "content_agent",
+                                       "promo_name",
+                                       "tpl_hotel_airline"], s.schema)
+        try:
+            q = qp.parse(terms)
+            sts = NumericRange("status_promo", 1, 1)
+            scores = ScoreFacet()
+            result = s.search(q, limit=None,
+                              filter=sts, mask=DateRange("end_date", None, datetime.now()),
+                              sortedby=scores, groupedby=["packet_id", "agent_id"])
+            return callback(result)
+        except (KeyError, ValueError) as e:
+            log.error(e.message)
+            return None
 
 
 def render_promo_by(ix, terms, req):
@@ -276,11 +395,11 @@ def render_promo_by(ix, terms, req):
         try:
             # terms = u"{term} AND (agent_slug:{match})".format(term=terms, match=u"al-amsor")
             q = qp.parse(terms)
-            # print(q)
+            print(q)
             sts = NumericRange("status_promo", 1, 1)
             oldDate = DateRange("end_date", None, datetime.now())
             scores = ScoreFacet()
-            results = s.search(q, filter=sts, mask=oldDate,
+            results = s.search(q, limit=None, filter=sts, mask=oldDate,
                                sortedby=scores, groupedby=["packet_id", "agent_id"])
             feed = []
             # feed.extend(get_list_packet(s, results, req))
@@ -313,11 +432,15 @@ def get_list_json(s, glist, ltype):
         # print(len(agents))
         if ltype == ListType.PACKETS:
             name = 'packet_name'
+            mtype = 'packet_slug'
+            tipe = 'packet'
             tagging = 'PACKETS'
             header = 'Paket Umroh'
             allpick = 'Semua Paket Umroh'
         if ltype == ListType.AGENTS:
             name = 'agent_name'
+            mtype = 'agent_slug'
+            tipe = 'agent'
             tagging = 'AGENT'
             header = 'Travel Umroh'
             allpick = 'Semua Biro Umroh'
@@ -326,6 +449,8 @@ def get_list_json(s, glist, ltype):
             doclist = glist[docid]
             # group_id : packet_id || agent_id
             nameo = s.stored_fields(doclist[0])[name]
+            match = s.stored_fields(doclist[0])[mtype]
+
             groupdoc = defaultdict(list)
             for docnum in doclist:
                 allow_date = (s.stored_fields(docnum)['end_date'] -
@@ -370,7 +495,8 @@ def get_list_json(s, glist, ltype):
                         "AgentId": docid,
                         "agent_city": groupdoc["gagcity"][0] if len(groupdoc["gagcity"]) > 0 else 'Kota _',
                         "agent_slug": groupdoc["gagslug"][0] if len(groupdoc["gagslug"]) > 0 else 'agent_kosong',
-                        "airline_name": groupdoc["gairname"][0].split("/")[0].replace(' ', '').lower() if len(groupdoc["gairname"]) > 0 else 'airline_empty',
+                        "airline_name": groupdoc["gairname"][0].split("/")[0].replace(' ', '').lower() if len(
+                            groupdoc["gairname"]) > 0 else 'airline_empty',
                         "rates_hotel": groupdoc["gratehotel"][-1] if len(groupdoc["gratehotel"]) > 0 else 0,
                         "PacketId": 0,
                         "NoOfPromo": len(groupdoc["gpromo"]),
@@ -382,13 +508,17 @@ def get_list_json(s, glist, ltype):
                         "GroupOfDisc": groupdoc["gdisc"],
                         "startDisc": groupdoc["gdisc"][0] if len(groupdoc["gdisc"]) > 0 else 0,
                         "endDisc": groupdoc["gdisc"][-1] if len(groupdoc["gdisc"]) > 0 else 0,
-                        "startDate": groupdoc["gdate"][0].isoformat() if len(groupdoc["gdate"]) > 0 else datetime.now().isoformat(),
-                        "endDate": groupdoc["gdate"][-1].isoformat() if len(groupdoc["gdate"]) > 0 else datetime.now().isoformat(),
+                        "startDate": groupdoc["gdate"][0].isoformat() if len(
+                            groupdoc["gdate"]) > 0 else datetime.now().isoformat(),
+                        "endDate": groupdoc["gdate"][-1].isoformat() if len(
+                            groupdoc["gdate"]) > 0 else datetime.now().isoformat(),
                         "ResultText": nameo,
                         "ResultAddress": nameo,
                         "Image": None,
                         "RetinaImage": None,
                         "BgImageLoader": None,
+                        "type": tipe,
+                        "match": match,
                         "tagging": tagging
                     })
 
@@ -432,13 +562,15 @@ def get_list_json(s, glist, ltype):
             "Image": None,
             "RetinaImage": None,
             "BgImageLoader": None,
+            "type": None,
+            "match": None,
             "tagging": None
         })
         feed.extend(feeder)
         return feed
     except (KeyError, ValueError) as e:
         s._field_caches.clear()
-        log.error(e.message)
+        log.error(e)
 
 
 def get_list_biro(s, results, req):
@@ -692,7 +824,7 @@ def render_promo_beta(ix, terms, req):
                                        "promo_name",
                                        "tpl_hotel_airline"], s.schema)
         try:
-            terms = u"{term} AND (agent_slug:{match})".format(term=terms, match=u"al-amsor")
+            # terms = u"{term} AND (agent_slug:{match})".format(term=terms, match=u"al-amsor")
             q = qp.parse(terms)
             print(q)
             sts = NumericRange("status_promo", 1, 1)

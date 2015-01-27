@@ -23,6 +23,7 @@ import re
 from pymongo import MongoClient
 import mysql.connector as my
 import time
+from slugify import slugify
 
 conn = MongoClient('localhost', 27017)
 db = conn["ikhram"]
@@ -164,16 +165,12 @@ for promo in promos.find():
         'promo_id': promo.get('promo_id'),
         'disc_promo': int(promo.get('discount', 0)),
         'promo_name': promo.get('title'),
-
         'promo_tags': promo_tag,
-
         'packet_id': umrahPacket.get('packet_id'),
         'packet_name': umrahPacket.get('name', None),
-
+        'packet_slug': slugify(umrahPacket.get('name', ''), to_lower=True),
         'tpl_hotel_airline': tpl_hotel_airline,
-
         'rates_hotel': rates_hotel,
-
         'content_packet': libPacket.get('content', ''),
         'agent_id': promo.get('agent_id', None),
         'agent_name': promo.get('agent_name', None),

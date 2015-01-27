@@ -1,3 +1,4 @@
+slugify
 pyramid
 pyramid_mako
 pyramid_tm

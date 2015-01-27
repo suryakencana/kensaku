@@ -31,8 +31,10 @@ def main(global_config, **settings):
     # set familiar url standart API
     config.add_route('results', '/api/v1/result')
     config.add_route('valid', '/api/v1/valid')
+    config.add_route('rest', '/api/v1/rest')
 
     # set inspeksi data
+    config.add_route('testrails', '/api/v1/test_rails')
     config.add_route('results_build', '/api/beta/result')
     config.add_route('valid_build', '/api/beta/valid')
     config.add_route('kensaku_build', '/kensaku-beta')
