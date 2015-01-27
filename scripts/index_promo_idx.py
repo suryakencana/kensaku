@@ -18,6 +18,7 @@
 """
 import os
 import time
+from datetime import datetime
 
 from pymongo import MongoClient
 import slugify
@@ -67,6 +68,7 @@ def content_promo_tags(multi_tag):
             stray.append(v)
     return ' '.join(stray).lower()
 
+
 if not os.path.exists(INDEXDIR):
     os.mkdir(INDEXDIR)
 
@@ -77,11 +79,16 @@ index = create_in(INDEXDIR, PromoIdxSchema)
 conn = MongoClient('localhost', 27017)
 db = conn["ikhram"]
 pro_idx = db.promo_idx
+start = unicode(datetime.now())
 try:
     # Fill index with {index-mongo} from MongoDB
     t = time.time()
     with index.writer(limitmb=1024) as w:
-        for row in pro_idx.find():
+        for row in pro_idx.find({
+            'end_date': {
+                '$gte': datetime.now()
+            }
+        }):
             # print(row.get('idx'))
             print(row.get('packet_id'))
             promotags = content_promo_tags(row.get('promo_tags', None))
@@ -117,4 +124,4 @@ try:
 except(KeyError, ValueError) as e:
     print(e)
 
- # promo_tags=','.join(row.get('promo_tags')) if len(row.get('promo_tags', [])) > 0 else u'',
+    # promo_tags=','.join(row.get('promo_tags')) if len(row.get('promo_tags', [])) > 0 else u'',
