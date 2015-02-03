@@ -25,10 +25,11 @@ from pymongo import MongoClient, DESCENDING
 import time
 import re
 
-conn = MongoClient('localhost', 27017)
+conn = MongoClient('ikhram.com', 27017)
 db = conn['ikhram']
 # lib = db.umrahs
 idx = db.promo_idx
+umrah = db.umrah_promotions
 
 # pisah kan slice ':' kemudian buat list dict per row
 #filter value dengan memisahkan capitalize
@@ -145,20 +146,31 @@ t = time.time()
 # res = idx.map_reduce(mapper, reducer, "myresults")
 # for r in res.find():
 #     print(r)
+# filtering data berdasarkan status promo dan lebih dari tanggal sekarang
+# results = idx.find({
+#     'end_date': {
+#         '$gte': datetime.now()
+#     },
+#     'status_promo': 1
+# }).sort('viewed', DESCENDING)
+# n = 0
+# for i, row in enumerate(results):
+#     if n >= 10:
+#         break
+#     # (end_date - (last_book + 1)) - now >= 0
+#     allow_date = (row.get("end_date", datetime.now()) -
+#                   timedelta(days=row.get('last_book', 0)+1)) - datetime.now()
+#     if allow_date.days >= 0:
+#         n += 1
+#         print("{3} | {2} : {0} - {1}".format(row.get("viewed"), row.get("promo_name"), allow_date, i))
 
-results = idx.find({
-    'end_date': {
-        '$gte': datetime.now()
-    },
-    'status_promo': 1
-}).sort('viewed', DESCENDING)
-n = 0
-for i, row in enumerate(results):
-    if n >= 10:
-        break
-    # (end_date - (last_book + 1)) - now >= 0
-    allow_date = (row.get("end_date", datetime.now()) -
-                  timedelta(days=row.get('last_book', 0)+1)) - datetime.now()
-    if allow_date.days >= 0:
-        n += 1
-        print("{3} | {2} : {0} - {1}".format(row.get("viewed"), row.get("promo_name"), allow_date, i))
+# synchronize data left to right
+# promo_idx to umrah_promotions
+# keep clean it!
+for i, pidx in enumerate(idx.find()):
+    # print(i)
+    # print(umrah.find({"promo_id": pidx.get("promo_id")}).count())
+    if 0 >= umrah.find({"promo_id": pidx.get("promo_id")}).count():
+        print("#{0} : pidx {1}".format(i, pidx.get("promo_id")))
+
+

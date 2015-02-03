@@ -1,0 +1,78 @@
+((promo_tags:april
+OR (content_packet:apri AND content_packet:pril)
+OR (content_agent:apri AND content_agent:pril)
+OR (promo_name:apri AND promo_name:pril)
+OR tpl_hotel_airline:april) AND agent_slug:mabrurotravel)
+
+[{
+    "packet_slug": "umroh-vip-9-hari-by-garuda-indonesia",
+    "promo_tags": "maskapai garuda indonesia hotel_madinah shaza al madina hotel_mekkah royal dar al eiman type reguler jumlah hari 9 hari keberangkatan 01 april 2015",
+    "promo_name": "Umroh VIP 9 hari by Garuda Indonesia",
+    "end_date": "2015-04-01T00:00:00",
+    "promo_id": 7488
+}, {
+    "packet_slug": "umroh-vip-9-hari-by-garuda-indonesia",
+    "promo_tags": "maskapai garuda indonesia hotel_madinah shaza al madina hotel_mekkah royal dar al eiman type reguler jumlah hari 9 hari keberangkatan 20 april 2015",
+    "promo_name": "Umroh VIP 9 hari by Garuda Indonesia",
+    "end_date": "2015-04-20T00:00:00",
+    "promo_id": 7489
+}, {
+    "packet_slug": "umroh-standart-9-hari-by-garuda-indonesia",
+    "promo_tags": "maskapai garuda indonesia hotel_madinah mukhtara al amin hotel_mekkah grand zam-zam hotel type reguler jumlah hari 9 hari keberangkatan 01 april 2015",
+    "promo_name": "Umroh Standart 9 hari by Garuda Indonesia",
+    "end_date": "2015-04-01T00:00:00",
+    "promo_id": 7499
+}, {
+    "packet_slug": "umroh-standart-9-hari-by-garuda-indonesia",
+    "promo_tags": "maskapai garuda indonesia hotel_madinah mukhtara al amin hotel_mekkah grand zam-zam hotel type reguler jumlah hari 9 hari keberangkatan 20 april 2015",
+    "promo_name": "Umroh Standart 9 hari by Garuda Indonesia",
+    "end_date": "2015-04-20T00:00:00",
+    "promo_id": 7500
+}, {
+    "packet_slug": "umroh-reguler-10-hari-by-saudi-airlines",
+    "promo_tags": "maskapai saudi airlines hotel_madinah mukhtara al amin hotel_mekkah grand zam-zam hotel type reguler jumlah hari 9 hari keberangkatan 07 april 2015",
+    "promo_name": "Umroh Reguler 10 hari by Saudi Airlines",
+    "end_date": "2015-04-07T00:00:00",
+    "promo_id": 7507
+}, {
+    "packet_slug": "umroh-reguler-10-hari-by-saudi-airlines",
+    "promo_tags": "maskapai saudi airlines hotel_madinah mukhtara al amin hotel_mekkah grand zam-zam hotel type reguler jumlah hari 9 hari keberangkatan 28 april 2015",
+    "promo_name": "Umroh Reguler 10 hari by Saudi Airlines",
+    "end_date": "2015-04-28T00:00:00",
+    "promo_id": 7508
+}, {
+    "packet_slug": "umroh-standar-by-garuda-indonesia",
+    "promo_tags": "maskapai garuda indonesia hotel_madinah mukhtara al amin hotel_mekkah grand zam-zam hotel type reguler jumlah hari 9 hari keberangkatan 01 april 2015",
+    "promo_name": "Umroh Standar By Garuda Indonesia",
+    "end_date": "2015-04-01T00:00:00",
+    "promo_id": 7511
+}, {
+    "packet_slug": "umroh-standar-by-garuda-indonesia",
+    "promo_tags": "maskapai garuda indonesia hotel_madinah mukhtara al amin hotel_mekkah grand zam-zam hotel type reguler jumlah hari 9 hari keberangkatan 20 april 2015",
+    "promo_name": "Umroh Standar By Garuda Indonesia",
+    "end_date": "2015-04-20T00:00:00",
+    "promo_id": 7512
+}, {
+    "packet_slug": "vip-9-hari-by-garuda-indonesia",
+    "promo_tags": "maskapai garuda indonesia hotel_madinah shaza al madina hotel_mekkah royal dar al eiman type reguler jumlah hari 9 hari keberangkatan 01 april 2015",
+    "promo_name": "VIP 9 Hari By Garuda Indonesia",
+    "end_date": "2015-04-01T00:00:00",
+    "promo_id": 7514
+}, {
+    "packet_slug": "vip-9-hari-by-garuda-indonesia",
+    "promo_tags": "maskapai garuda indonesia hotel_madinah shaza al madina hotel_mekkah royal dar al eiman type reguler jumlah hari 9 hari keberangkatan 20 april 2015",
+    "promo_name": "VIP 9 Hari By Garuda Indonesia",
+    "end_date": "2015-04-20T00:00:00",
+    "promo_id": 7515
+}]
+
+37
+56
+37
+56
+70
+91
+37
+56
+37
+56

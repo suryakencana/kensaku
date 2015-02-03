@@ -166,6 +166,7 @@ for promo in promos.find():
         'disc_promo': int(promo.get('discount', 0)),
         'promo_name': promo.get('title'),
         'promo_tags': promo_tag,
+        'promo_slug': slugify(promo.get('title', ''), to_lower=True),
         'packet_id': umrahPacket.get('packet_id'),
         'packet_name': umrahPacket.get('name', None),
         'packet_slug': slugify(umrahPacket.get('name', ''), to_lower=True),

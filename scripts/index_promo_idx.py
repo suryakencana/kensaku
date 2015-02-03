@@ -42,12 +42,13 @@ class PromoIdxSchema(fields.SchemaClass):
     promo_id = fields.NUMERIC(int, stored=True, sortable=True)
     disc_promo = fields.NUMERIC(int, stored=True, sortable=True)
     promo_name = fields.TEXT(stored=True, sortable=True, spelling=True, analyzer=anaNgram, phrase=False)
+    promo_slug = fields.TEXT(stored=True, sortable=True)
     promo_ngramword = fields.NGRAMWORDS
     promo_tags = fields.TEXT(sortable=True)
     packet_id = fields.NUMERIC(int, stored=True, sortable=True)
     packet_name = fields.TEXT(stored=True, sortable=True)
     packet_slug = fields.TEXT(stored=True, sortable=True)
-    tpl_hotel_airline = fields.TEXT(sortable=True, analyzer=ana)
+    tpl_hotel_airline = fields.TEXT(sortable=True, analyzer=anaNgram)
     content_packet = fields.TEXT(sortable=True, spelling=True, analyzer=anaNgram, phrase=False)
     agent_id = fields.NUMERIC(int, stored=True, sortable=True)
     agent_name = fields.TEXT(stored=True, sortable=True)
@@ -100,11 +101,12 @@ try:
                 end_date=row.get('end_date'),
                 promo_id=row.get('promo_id'),
                 disc_promo=row.get('disc_promo'),
-                promo_name=row.get('promo_name', ''), promo_ngramword=row.get('promo_name'),
+                promo_name=row.get('promo_name', u''), promo_ngramword=row.get('promo_name'),
                 promo_tags=unicode(promotags),
+                promo_slug=row.get('promo_slug', u'promo-slug'),
                 packet_id=int(row.get('packet_id')),
-                packet_name=row.get('packet_name', ''),
-                packet_slug=row.get('packet_slug'),
+                packet_name=row.get('packet_name', u''),
+                packet_slug=row.get('packet_slug', u'packet-slug'),
                 tpl_hotel_airline=row.get('tpl_hotel_airline'),
                 content_packet=row.get('content_packet'),
                 agent_id=row.get('agent_id'),
