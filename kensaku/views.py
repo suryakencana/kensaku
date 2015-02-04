@@ -140,7 +140,9 @@ def valid_button(request):
         def deep(data):
             feed = []
             for hit in data:
-                feed.append(hit['promo_id'])
+                allow_date = (hit['end_date'] - timedelta(days=hit['last_book'] + 1)) - datetime.now()
+                if allow_date.days >= 0:
+                    feed.append(hit['promo_id'])
             return feed
 
         arrPromo = get_search(get_searcher(), linq, deep)
@@ -212,8 +214,12 @@ def rest(request):
 
     def deep(data):
         feed = []
+        print(len(data))
         for hit in data:
-            feed.append(hit['promo_id'])
+            allow_date = (hit['end_date'] - timedelta(days=hit['last_book'] + 1)) - datetime.now()
+            if allow_date.days >= 0:
+                feed.append(hit['promo_id'])
+        print(len(feed))
         return feed
 
     res = get_search(get_searcher(), linq, deep)
