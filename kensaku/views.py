@@ -95,9 +95,9 @@ def test_rail(request):
             for hit in results:
                 feeder = []
                 allow_date = (hit['end_date'] -
-                              timedelta(days=hit['last_book'] + 1)) - datetime.now()
+                              timedelta(days=hit['last_book'])) - datetime.now()
                 # print("{0}, {1}".format(allow_date.days))
-                if allow_date.days >= 0:
+                if (allow_date.days - 1) >= 0:
                     # if hit.rank < 10:
                     data = {
                         "promo_id": hit['promo_id'],
@@ -140,8 +140,8 @@ def valid_button(request):
         def deep(data):
             feed = []
             for hit in data:
-                allow_date = (hit['end_date'] - timedelta(days=hit['last_book'] + 1)) - datetime.now()
-                if allow_date.days >= 0:
+                allow_date = (hit['end_date'] - timedelta(days=hit['last_book'])) - datetime.now()
+                if (allow_date.days - 1) >= 0:
                     feed.append(hit['promo_id'])
             return feed
 
@@ -216,8 +216,8 @@ def rest(request):
         feed = []
         print(len(data))
         for hit in data:
-            allow_date = (hit['end_date'] - timedelta(days=hit['last_book'] + 1)) - datetime.now()
-            if allow_date.days >= 0:
+            allow_date = (hit['end_date'] - timedelta(days=hit['last_book'])) - datetime.now()
+            if (allow_date.days - 1) >= 0:
                 feed.append(hit['promo_id'])
         print(len(feed))
         return feed
@@ -280,8 +280,8 @@ def render_empty_term(req):
                     break
                 # (end_date - (last_book + 1)) - now >= 0
                 allow_date = (row.get("end_date", datetime.now()) -
-                              timedelta(days=row.get('last_book', 0) + 1)) - datetime.now()
-                if allow_date.days >= 0:
+                              timedelta(days=row.get('last_book', 0))) - datetime.now()
+                if (allow_date.days - 1) >= 0:
                     n += 1
                     grouppop.extend([row.get('promo_id', None)])
                     groupprice.extend([row.get('price', 0)])
@@ -393,7 +393,6 @@ def get_search(ix, terms, callback):
                                        "tpl_hotel_airline"], s.schema)
         try:
             q = qp.parse(terms)
-            print(q)
             sts = NumericRange("status_promo", 1, 1)
             scores = ScoreFacet()
             result = s.search(q, limit=None,
@@ -471,8 +470,8 @@ def get_list_json(s, glist, ltype):
             groupdoc = defaultdict(list)
             for docnum in doclist:
                 allow_date = (s.stored_fields(docnum)['end_date'] -
-                              timedelta(days=s.stored_fields(docnum)['last_book'] + 1)) - datetime.now()
-                if allow_date.days >= 0:
+                              timedelta(days=s.stored_fields(docnum)['last_book'])) - datetime.now()
+                if (allow_date.days - 1) >= 0:
                     # group packet slug
                     groupdoc["gpslug"].append(s.stored_fields(docnum)[mtype])
                     # group promo per group
