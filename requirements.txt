@@ -1,8 +1,11 @@
 slugify
+celery
 pyramid
 pyramid_mako
 pyramid_tm
-pyramid-debugtoolbar==1.0.9
+pyramid-debugtoolbar
+pyramid_celery
+redis
 whoosh
 waitress
 gunicorn

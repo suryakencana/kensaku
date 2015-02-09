@@ -19,7 +19,7 @@
 import os
 import time
 
-from pymongo import MongoClient, son_manipulator
+from pymongo import MongoClient
 from whoosh import fields, analysis
 from whoosh.index import create_in
 from whoosh.lang.stopwords import stoplists

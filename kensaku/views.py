@@ -421,6 +421,8 @@ def render_promo_by(ix, terms, req):
             results = s.search(q, limit=None, filter=sts, mask=oldDate,
                                sortedby=scores, groupedby=["packet_id", "agent_id"])
             feed = []
+            # set all promo on search
+            feed.extend(list_all_promo(results))
             paket = results.groups('packet_id')
             feed.extend(get_list_json(s, paket, ListType.PACKETS))
             biro = results.groups('agent_id')
@@ -590,6 +592,45 @@ def get_list_json(s, glist, ltype):
     except (KeyError, ValueError) as e:
         s._field_caches.clear()
         log.error(e)
+
+
+def list_all_promo(glist):
+    feed = []
+    for hit in glist:
+        allow_date = (hit['end_date'] - timedelta(days=hit['last_book'])) - datetime.now()
+        if (allow_date.days - 1) >= 0:
+            feed.append(hit['end_date'])
+    return [{"Name": None,
+             "IsDefault": False,
+             "IsTitle": True,
+             "HasImage": False,
+             "Header": "Tampilkan semua paket",
+             "ObjectId": 0,
+             "AgentId": 0,
+             "agent_city": None,
+             "agent_slug": None,
+             "airline_name": None,
+             "rates_hotel": 0,
+             "PacketId": 0,
+             "NoOfPromo": len(feed),
+             "GroupOfPromo": None,
+             "PromoText": None,
+             "GroupOfPrice": None,
+             "startPrice": 0,
+             "endPrice": 0,
+             "GroupOfDisc": None,
+             "startDisc": 0,
+             "endDisc": 0,
+             "startDate": feed[0].isoformat() if len(feed) > 0 else 0,
+             "endDate": feed[-1].isoformat() if len(feed) > 0 else 0,
+             "ResultText": "Tampilkan semua paket",
+             "ResultAddress": "Tampilkan semua paket",
+             "Image": None,
+             "RetinaImage": None,
+             "BgImageLoader": None,
+             "type": None,
+             "match": None,
+             "tagging": None}]
 
 
 # digunakan untuk proses building analisa
