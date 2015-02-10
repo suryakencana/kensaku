@@ -34,6 +34,10 @@ from pyramid_celery import celery_app as app
 
 
 LOG = logging.getLogger(__name__)
+# Initiate db connection
+my_conn = my.connect(user='root', password='root', database='ikhram')
+conn = MongoClient('localhost', 27017)
+db = conn["ikhram"]
 
 
 @app.task
@@ -54,12 +58,12 @@ def build_index_whoosh():
 
 
 def mongo_index():
-    conn = MongoClient('localhost', 27017)
-    db = conn["ikhram"]
+    # conn = MongoClient('localhost', 27017)
+    # db = conn["ikhram"]
     promos = db.umrah_promotions
     # mix_promo = db.create_collection('promo_idx')
     mix_promo = db.promo_idx
-    my_conn = my.connect(user='root', password='root', database='ikhram')
+    # my_conn = my.connect(user='root', password='root', database='ikhram')
     # ambil agent record
     t = time.time()
     for promo in promos.find():
@@ -263,9 +267,9 @@ def whoosh_index():
     # Initialize index
     index = create_in(INDEXDIR, PromoIdxSchema)
 
-    # Initiate db connection
-    conn = MongoClient('localhost', 27017)
-    db = conn["ikhram"]
+    # # Initiate db connection
+    # conn = MongoClient('localhost', 27017)
+    # db = conn["ikhram"]
     pro_idx = db.promo_idx
     start = unicode(datetime.now())
     try:
@@ -280,7 +284,7 @@ def whoosh_index():
                 # print(row.get('idx'))
                 print(row.get('packet_id'))
                 promotags = content_promo_tags(row.get('promo_tags', None))
-                rates_hotels = sorted(row.get('rates_hotel'))[-1] if len(row.get('rates_hotel', [])) > 0 else None
+                rates_hotels = sorted(row.get('rates_hotel'))[-1] if len(row.get('rates_hotel', [])) > 0 else 0
                 w.update_document(
                     idx=unicode(row.get('idx')),
                     price=row.get('price', 0),

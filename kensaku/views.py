@@ -210,16 +210,16 @@ def rest(request):
     tipe = request.params.get('type', '')
     match = request.params.get('match', '')
     terms = request.params.get('q', '')
+    # set term fix match AND
     linq = get_linq(terms, tipe, match)
 
     def deep(data):
         feed = []
-        print(len(data))
         for hit in data:
             allow_date = (hit['end_date'] - timedelta(days=hit['last_book'])) - datetime.now()
             if (allow_date.days - 1) >= 0:
                 feed.append(hit['promo_id'])
-        print(len(feed))
+        # print(len(feed))
         return feed
 
     res = get_search(get_searcher(), linq, deep)
@@ -291,7 +291,7 @@ def render_empty_term(req):
                     agent_slug = row.get('agent_slug', None)
                     packet_slug = row.get('packet_slug', None)
                     airline_name = str(row.get('airline_name', '').split("/")[0]).replace(' ', '').lower()
-                    rates_hotel = sorted(row.get('rates_hotel'))[-1]
+                    rates_hotel = sorted(row.get('rates_hotel', 0))[-1]
                     feeder.append({
                         "Name": row.get('promo_name', 'No title'),
                         "IsDefault": True,
@@ -468,7 +468,6 @@ def get_list_json(s, glist, ltype):
             # group_id : packet_id || agent_id
             nameo = s.stored_fields(doclist[0])[name]
             # match = s.stored_fields(doclist[0])[mtype]
-
             groupdoc = defaultdict(list)
             for docnum in doclist:
                 allow_date = (s.stored_fields(docnum)['end_date'] -
@@ -500,7 +499,7 @@ def get_list_json(s, glist, ltype):
             groupdoc["gagcity"] = filter(None, sorted(groupdoc["gagcity"]))
             groupdoc["gairname"] = filter(None, sorted(groupdoc["gairname"]))
             groupdoc["gratehotel"] = filter(None, sorted(groupdoc["gratehotel"]))
-            # print(groupdoc["gagcity"])
+
             # print(groupdoc["gratehotel"])
             if len(groupdoc["gpromo"]) > 0:
                 # tampilkan data rank 10
@@ -589,7 +588,7 @@ def get_list_json(s, glist, ltype):
         })
         feed.extend(feeder)
         return feed
-    except (KeyError, ValueError) as e:
+    except (KeyError, ValueError, TypeError) as e:
         s._field_caches.clear()
         log.error(e)
 
@@ -601,7 +600,7 @@ def list_all_promo(glist):
         if (allow_date.days - 1) >= 0:
             feed.append(hit['end_date'])
     return [{"Name": None,
-             "IsDefault": False,
+             "IsDefault": True,
              "IsTitle": True,
              "HasImage": False,
              "Header": "Tampilkan semua paket",

@@ -93,7 +93,7 @@ try:
             # print(row.get('idx'))
             print(row.get('packet_id'))
             promotags = content_promo_tags(row.get('promo_tags', None))
-            rates_hotels = sorted(row.get('rates_hotel'))[-1] if len(row.get('rates_hotel', [])) > 0 else None
+            rates_hotels = sorted(row.get('rates_hotel', 0))[-1] if len(row.get('rates_hotel', [])) > 0 else 0
             w.update_document(
                 idx=unicode(row.get('idx')),
                 price=row.get('price', 0),
