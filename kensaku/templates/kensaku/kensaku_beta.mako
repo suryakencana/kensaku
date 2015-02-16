@@ -135,13 +135,13 @@
 </script>
 <script id="acw" type="text/x-handlebars-template">
     <span class="autocomplete-suggestion acomSug acomZZ"
-         data-val="{{ResultText}}"
-         data-promo="{{ NoOfPromo }}"
-         data-match="{{match}}"
-         data-type="{{type}}"
-         data-sdate="{{startDate}}"
-         data-edate="{{endDate}}"
-         data-price="{{startPrice}}"
+          data-val="{{ResultText}}"
+          data-promo="{{ NoOfPromo }}"
+          data-match="{{match}}"
+          data-type="{{type}}"
+          data-sdate="{{startDate}}"
+          data-edate="{{endDate}}"
+          data-price="{{startPrice}}"
             >
         {{#IsTitle}}
         <div class="headTit">
@@ -220,11 +220,23 @@ $.widget("ikhram.promoautocomplete", $.ui.autocomplete, {
     _renderMenu: function(ul, items) {
         var that = this;
         // set header auto complete unless term < 0
-        if(0 >= that.options._term && 2 < items.length) ul.append(that.options.headerWrapper);
-        // sett wrapper empty result
+        if(0 >= that.options._term && 3 < items.length) ul.append(that.options.headerWrapper);
+        // set wrapper empty result
         console.log(items.length);
-        if(2 < items.length) {
+        if(3 < items.length) {
             that.options._focusedItem = items[1];
+            // set header all promo item
+            // var tpl = $('#acw-header').html(),
+            //     template = Handlebars.compile(tpl);
+            //     ul.append(template(items[0]));
+            //     fitem = items[0];
+            //     itm = $.extend({}, fitem, {
+            //         label: fitem.ResultText || '',
+            //         value: fitem.ResultText || '',
+            //         term: that.options._term || ''
+            //     });
+            //     that._renderItemData(ul, itm);
+            // end set
             $.each(items, function (i, item) {
                 item = $.extend({}, item, {
                     label: item.ResultText || '',
@@ -234,6 +246,7 @@ $.widget("ikhram.promoautocomplete", $.ui.autocomplete, {
                 that._renderItemData(ul, item);
             });
         } else {
+            // empty wrapper
             that.options._focusedItem = '';
             ul.append(that.options.emptyWrapper);
             $.each(items, function (i, item) {
@@ -248,11 +261,11 @@ $.widget("ikhram.promoautocomplete", $.ui.autocomplete, {
     },
     _renderItem: function(ul, item) {
         var that = this,
-            head = '',
-            tpl = $('#acw').html(),
-            template = Handlebars.compile(tpl);
+                head = '',
+                tpl = $('#acw').html(),
+                template = Handlebars.compile(tpl);
         // set template
-        if(item.IsTitle) head = 'ui-autocomplete-category';
+        if(item.IsTitle && !item.IsDefault) head = 'ui-autocomplete-category';
         if(that.options._focusedItem == '') {
             return $( "<li>")
                     .css('display', 'none')
@@ -272,23 +285,33 @@ $.widget("ikhram.promoautocomplete", $.ui.autocomplete, {
 $(function(){
     var kensakuauto = $('#kensaku').promoautocomplete({
         query: '',
-        headerWrapper: '<div class="ui-autocomplete-category header-acs"><img class="ideIcon" src="assets/newfrontend/images/ide.png"><span>Ketik paket umroh yang anda cari. <span class="contoh">Contoh: <b> Langsung madinah, Plus Turki, Garuda Indonesia, Mei 2015, Hari kejepit, Patuna Travel </b></span></span></div>',
-        emptyWrapper: '<div class="ui-autocomplete-category header-acs">Kata Kunci Tidak ditemukan<div/>',
+        headerWrapper: '<div class="ui-autocomplete-category header-acs">' +
+                '<img class="ideIcon" src="assets/newfrontend/images/ide.png">' +
+                '<span>Ketik paket umroh yang anda cari.<br /> <span class="contoh">Contoh: <b> ' +
+                'Langsung madinah, Plus Turki, Garuda Indonesia, Mei 2015, Hari kejepit, ' +
+                'Patuna Travel </b></span></span></div>',
+        emptyWrapper: '<div class="ui-autocomplete-category header-acs">' +
+                '<img class="ideIcon" src="assets/newfrontend/images/sadface.png">' +
+                'Kata Kunci Tidak ditemukan<div/>',
         minLength: 0,
         delay: 0,
         autoFocus: false,
         source: function(request, response) {
-            $.ajax({
-                url: '${request.route_url('results_build')}',
-                method: 'POST',
-                data: {
-                    q: request.term
-                },
-                dataType: "json",
-                success: function (data) {
-                    response(data);
-                }
-            });
+            xhr.request({
+                        url: "http://localhost:6543/api/v1/result",
+                        method: "POST",
+                        data: {
+                            q: request.term,
+                            match: '',
+                            type: ''
+                        }
+                    },
+                    function(rpcdata){
+                        var json = easyXDM.getJSONObject().parse(rpcdata.data);
+                        // console.log(rpcdata.data);
+                        response(json);
+                        // var xhr = $.getJSON('localhost:6543/results', { q: term }, function(data){ response(data);
+                    }, function(errors){});
         },
         search: function(ev, ui) {
             console.log('--- hail kensaku ---');
@@ -297,9 +320,7 @@ $(function(){
         focus: function(ev, ui) {
             console.log("--- focus --");
             var that = $(this).promoautocomplete("instance");
-            console.log(that.options._focusedItem);
             if(ui.item) that.options._focusedItem = ui.item;
-            //console.log(this._focusedItem);
         },
         select: function(ev, ui) {
             console.log("--- select ---");
@@ -354,7 +375,7 @@ $(function(){
         console.log("---click---");
         var that = $(this).promoautocomplete("instance");
         $(this).promoautocomplete('search', that.options._term);
-        that._value(that.options._term);
+        if(that.options._term !== that._value())that._value(that.options._term);
     });
     kensakuauto.bind("blur", function(ev) {
         var that = $(this).promoautocomplete("instance"),

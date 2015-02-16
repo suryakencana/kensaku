@@ -599,6 +599,7 @@ def list_all_promo(glist):
         allow_date = (hit['end_date'] - timedelta(days=hit['last_book'])) - datetime.now()
         if (allow_date.days - 1) >= 0:
             feed.append(hit['end_date'])
+    feed = sorted(feed)
     return [{"Name": None,
              "IsDefault": True,
              "IsTitle": True,
@@ -674,7 +675,8 @@ def render_promo_beta(ix, terms, req):
             results = s.search(q, limit=None, filter=sts, mask=oldDate,
                                sortedby=scores, groupedby=["packet_id", "agent_id"])
             feed = []
-
+            # set all promo on search
+            feed.extend(list_all_promo(results))
             paket = results.groups('packet_id')
             feed.extend(get_list_json(s, paket, ListType.PACKETS))
             biro = results.groups('agent_id')

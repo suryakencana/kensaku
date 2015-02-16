@@ -1,0 +1,29 @@
+sudo apt-get install postgresql postgresql-contrib
+sudo apt-get install postgresql-client
+sudo pg_createcluster 9.3 main --start
+sudo -u postgres psql postgres
+
+pg_hba.conf
+host all all  0.0.0.0/0 md5
+
+postgresql.conf
+listen_addresses = '*'
+
+listen_addresses = 'localhost'    # what IP address(es) to listen on;
+# \password postgres
+
+Enter new password:
+
+
+$ createuser -h eden -p 5000 -S -D -R -e joe
+CREATE ROLE joe NOSUPERUSER NOCREATEDB NOCREATEROLE INHERIT LOGIN;
+
+$ createuser joe
+Shall the new role be a superuser? (y/n) n
+Shall the new role be allowed to create databases? (y/n) n
+Shall the new role be allowed to create more new roles? (y/n) n
+
+$ createuser -P -s -e joe
+Enter password for new role: xyzzy
+Enter it again: xyzzy
+CREATE ROLE joe PASSWORD 'md5b5f5ba1a423792b526f799ae4eb3d59e' SUPERUSER CREATEDB CREATEROLE INHERIT LOGIN;
