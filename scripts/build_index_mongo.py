@@ -123,7 +123,7 @@ for promo in promos.find():
     # set untuk template_hotel_airline
     tpl_hotel_airline = ''.join(hotel_content)
 
-    #promo tag filter
+    # promo tag filter
     def filter_tag(tags=None):
         """fungsi filter promo tag menjadi dict type """
         tagdict = defaultdict(list)
@@ -134,7 +134,8 @@ for promo in promos.find():
                 # filtering key Besarkecil, lowercase
                 k = str(Besarkecil(k)).lower()
                 # print(k)
-                if k in ['cari', 'jadwal', 'keberangkatan', 'maskapai', 'type', 'ibadah', 'jumlah hari', 'rute', 'tour']:
+                if k in ['cari', 'jadwal', 'keberangkatan', 'maskapai', 'type', 'ibadah', 'jumlah hari', 'rute',
+                         'tour']:
                     res = re.findall(r"(^[A-Z][^A-Z]+)|([^\W\d_]+|[\d+]+)", v)
                     arres = []
                     for resple in res:
@@ -143,6 +144,7 @@ for promo in promos.find():
                     # print(' '.join(arres))
                     tagdict[k].append(' '.join(arres))
         return tagdict
+
     multi_tag = promo.get('promo_tags', None)
     # print(multi_tag)
     if multi_tag is not None:

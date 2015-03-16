@@ -8,7 +8,6 @@ from pymongo import DESCENDING
 from pyramid.response import Response
 from pyramid.view import view_config
 from whoosh import index, qparser
-from whoosh import highlight
 from whoosh.query.ranges import NumericRange, DateRange
 from whoosh.scoring import TF_IDF
 from whoosh.sorting import ScoreFacet
