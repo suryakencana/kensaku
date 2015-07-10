@@ -58,9 +58,9 @@
     <div class="autocomplete-suggestion acomSug acomZZ"
          data-val="{{ResultText}}"
          data-promo="{{ GroupOfPromo }}"
-         data-sdate="{{startDate}}"
-         data-edate="{{endDate}}"
-         data-price="{{startPrice}}"
+         data-sdate="{{ startDate }}"
+         data-edate="{{ endDate }}"
+         data-price="{{ startPrice }}"
             >
         {{#IsTitle}}
         <span class="headTit">{{Header}} <span class="align-right"><strong class="pull-right">{{NoOfPromo}} Paket</strong></span></span>

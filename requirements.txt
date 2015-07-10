@@ -1,3 +1,4 @@
+mysql
 slugify
 celery
 pyramid

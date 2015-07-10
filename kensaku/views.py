@@ -290,7 +290,7 @@ def render_empty_term(req):
                     agent_slug = row.get('agent_slug', None)
                     packet_slug = row.get('packet_slug', None)
                     airline_name = str(row.get('airline_name', '').split("/")[0]).replace(' ', '').lower()
-                    rates_hotel = sorted(row.get('rates_hotel', 0))[-1]
+                    rates_hotel = sorted(row.get('rates_hotel', None))[-1] if len(row.get('rates_hotel', [])) > 0 else 0
                     feeder.append({
                         "Name": row.get('promo_name', 'No title'),
                         "IsDefault": True,
