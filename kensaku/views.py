@@ -424,8 +424,8 @@ def render_promo_by(ix, terms, req):
             feed.extend(list_all_promo(results))
             paket = results.groups('packet_id')
             feed.extend(get_list_json(s, paket, ListType.PACKETS))
-            biro = results.groups('agent_id')
-            feed.extend(get_list_json(s, biro, ListType.AGENTS))
+            # biro = results.groups('agent_id')
+            # feed.extend(get_list_json(s, biro, ListType.AGENTS))
         except (KeyError, ValueError) as e:
             feed = None
             s._field_caches.clear()
@@ -594,10 +594,13 @@ def get_list_json(s, glist, ltype):
 
 def list_all_promo(glist):
     feed = []
+    groupprice = []
     for hit in glist:
         allow_date = (hit['end_date'] - timedelta(days=hit['last_book'])) - datetime.now()
         if (allow_date.days - 1) >= 0:
             feed.append(hit['end_date'])
+            groupprice.append(hit['price'])
+            
     feed = sorted(feed)
     return [{"Name": None,
              "IsDefault": True,
@@ -615,8 +618,8 @@ def list_all_promo(glist):
              "GroupOfPromo": None,
              "PromoText": None,
              "GroupOfPrice": None,
-             "startPrice": 0,
-             "endPrice": 0,
+             "startPrice": groupprice[0] if len(groupprice) > 0 else 0,
+             "endPrice": groupprice[-1] if len(groupprice) > 0 else 0,
              "GroupOfDisc": None,
              "startDisc": 0,
              "endDisc": 0,
