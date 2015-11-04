@@ -594,10 +594,12 @@ def get_list_json(s, glist, ltype):
 
 def list_all_promo(glist):
     feed = []
+    groupprice = []
     for hit in glist:
         allow_date = (hit['end_date'] - timedelta(days=hit['last_book'])) - datetime.now()
         if (allow_date.days - 1) >= 0:
             feed.append(hit['end_date'])
+	    groupprice.append(hit['price'])
     feed = sorted(feed)
     return [{"Name": None,
              "IsDefault": True,
@@ -618,8 +620,8 @@ def list_all_promo(glist):
              "startPrice": 0,
              "endPrice": 0,
              "GroupOfDisc": None,
-             "startDisc": 0,
-             "endDisc": 0,
+             "startDisc": groupprice[0] if len(groupprice) > 0 else 0,
+             "endDisc": groupprice[-1] if len(groupprice) > 0 else 0,
              "startDate": feed[0].isoformat() if len(feed) > 0 else 0,
              "endDate": feed[-1].isoformat() if len(feed) > 0 else 0,
              "ResultText": "Tampilkan semua paket",
