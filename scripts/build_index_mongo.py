@@ -30,7 +30,7 @@ db = conn["ikhram"]
 promos = db.umrah_promotions
 # mix_promo = db.create_collection('promo_idx')
 mix_promo = db.promo_idx
-my_conn = my.connect(user='root', password='root', database='ikhram')
+my_conn = my.connect(user='root', password='5664', database='ikhram')
 # ambil agent record
 t = time.time()
 for promo in promos.find():

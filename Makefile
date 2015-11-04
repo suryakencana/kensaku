@@ -1,7 +1,7 @@
 # makefile automate
 PY := $(VENV)bin/python
 PIP := $(VENV)bin/pip
-VENV := ~/.virtualenvs/pyr2-env/
+VENV := venv/
 PASTER := $(VENV)bin/pserve
 GUNICORN := $(VENV)bin/gunicorn
 CELERY := $(VENV)bin/celery
