@@ -599,8 +599,9 @@ def list_all_promo(glist):
         allow_date = (hit['end_date'] - timedelta(days=hit['last_book'])) - datetime.now()
         if (allow_date.days - 1) >= 0:
             feed.append(hit['end_date'])
-	    groupprice.append(hit['price'])
+            groupprice.append(hit['price'])
     feed = sorted(feed)
+    groupprice = sorted(groupprice)
     return [{"Name": None,
              "IsDefault": True,
              "IsTitle": True,
