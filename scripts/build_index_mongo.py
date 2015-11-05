@@ -26,11 +26,11 @@ import time
 from slugify import slugify
 
 conn = MongoClient('localhost', 27017)
-db = conn["ikhram"]
+db = conn["shafira"]
 promos = db.umrah_promotions
 # mix_promo = db.create_collection('promo_idx')
 mix_promo = db.promo_idx
-my_conn = my.connect(user='root', password='root', database='ikhram')
+my_conn = my.connect(user='root', password='5664', database='shafira')
 # ambil agent record
 t = time.time()
 for promo in promos.find():

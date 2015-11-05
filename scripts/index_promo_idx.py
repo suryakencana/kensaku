@@ -78,7 +78,7 @@ index = create_in(INDEXDIR, PromoIdxSchema)
 
 # Initiate db connection
 conn = MongoClient('localhost', 27017)
-db = conn["ikhram"]
+db = conn["shafira"]
 pro_idx = db.promo_idx
 start = unicode(datetime.now())
 try:

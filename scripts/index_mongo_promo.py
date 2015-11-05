@@ -47,7 +47,7 @@ index = create_in(INDEXDIR, PromoSchema)
 
 # Initiate db connection
 conn = MongoClient('localhost', 27017)
-db = conn["ikhram"]
+db = conn["shafira"]
 lib = db.libraries
 
 strTolist = lambda x: x.strip().replace('\'', '').replace('[', '').replace(']', '').split(',')

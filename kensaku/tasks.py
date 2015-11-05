@@ -35,9 +35,9 @@ from pyramid_celery import celery_app as app
 
 LOG = logging.getLogger(__name__)
 # Initiate db connection
-my_conn = my.connect(user='root', password='root', database='ikhram')
+my_conn = my.connect(user='root', password='5664', database='shafira')
 conn = MongoClient('localhost', 27017)
-db = conn["ikhram"]
+db = conn["shafira"]
 
 
 @app.task
